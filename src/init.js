@@ -14,7 +14,7 @@ var config = {
 };
 
 var game = new Phaser.Game(config);
-var player, cursors;
+var dardo, cursors;
 
 function preload() {
     this.load.image('fondo', './assets/scenes/pastito.jpg');
@@ -24,21 +24,22 @@ function preload() {
 function create() {
     let bg = this.add.image(400, 300, 'fondo');
     bg.setDisplaySize(800, 600);
-    player = this.physics.add.sprite(400, 300, 'jugador');
-    player.setDisplaySize(60, 60);
+    dardo = this.physics.add.sprite(400, 300, 'jugador');
+    dardo.setDisplaySize(60, 60);
+    dardo.setCollideWorldBounds(true);
     cursors = this.input.keyboard.createCursorKeys();
 }
 
 function update() {
-    player.setVelocity(0);
+    dardo.setVelocity(0);
     if (cursors.left.isDown) {
-        player.setVelocityX(-200);
-        player.flipX = true;
+        dardo.setVelocityX(-200);
+        dardo.flipX = true;
     }
     if (cursors.right.isDown) {
-        player.setVelocityX(200);
-        player.flipX = false;
+        dardo.setVelocityX(200);
+        dardo.flipX = false;
     }
-    if (cursors.up.isDown) player.setVelocityY(-200);
-    if (cursors.down.isDown) player.setVelocityY(200);
+    if (cursors.up.isDown) dardo.setVelocityY(-200);
+    if (cursors.down.isDown) dardo.setVelocityY(200);
 }
