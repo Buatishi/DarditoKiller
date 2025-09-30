@@ -1,4 +1,4 @@
-class MainMenu extends Phaser.Scene {
+export class MainMenu extends Phaser.Scene {
     constructor() {
         super({
             key: 'MainMenu'
@@ -14,7 +14,7 @@ class MainMenu extends Phaser.Scene {
     }
 }
 
-class PauseMenu extends Phaser.Scene {
+export class PauseMenu extends Phaser.Scene {
     constructor() {
         super({
             key: 'PauseMenu'
@@ -30,7 +30,7 @@ class PauseMenu extends Phaser.Scene {
     }
 }
 
-class GameOnMenu extends Phaser.Scene {
+export class GameOnMenu extends Phaser.Scene {
     constructor() {
         super({
             key: 'GameOnMenu'
@@ -46,7 +46,7 @@ class GameOnMenu extends Phaser.Scene {
     }
 }
 
-class GameOverMenu extends Phaser.Scene {
+export class GameOverMenu extends Phaser.Scene {
     constructor() {
         super({
             key: 'GameOverMenu'
