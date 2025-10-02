@@ -6,7 +6,7 @@ export class MainMenu extends Phaser.Scene {
     }
 
     preload(){
-
+        this.load.image('menuBackground', '../assets/scenes/menuBackground.png')
     }
 
     create(){
@@ -22,7 +22,7 @@ export class PauseMenu extends Phaser.Scene {
     }
 
     preload(){
-
+        this.load.image('menuBackground', '../assets/scenes/menuBackground.png')
     }
 
     create(){
@@ -38,11 +38,11 @@ export class GameOnMenu extends Phaser.Scene {
     }
 
     preload(){
-
+        this.load.image('menuBackground', '../assets/scenes/menuBackground.png')
     }
 
     create(){
-
+        this.add.image(400,300, 'menuBackground')
     }
 }
 

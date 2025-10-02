@@ -17,12 +17,14 @@ var config = {
 
 var game = new Phaser.Game(config);
 var dardo, cursors;
-var moni
+var moni;
+var vida = 100;
+var vidaTexto;
 
 function preload() {
     this.load.image('fondo', './assets/scenes/pastito.jpg');
     this.load.image('jugador', './assets/entities/dardo.jpg');
-    this.load.image('enemigo' , './assets/entities/moni.jpg')
+    this.load.image('enemigo', './assets/entities/moni.jpg');
 }
 
 function create() {
@@ -31,15 +33,22 @@ function create() {
     dardo = this.physics.add.sprite(400, 300, 'jugador');
     dardo.setDisplaySize(60, 60);
     dardo.setCollideWorldBounds(true);
-    moni = this.physics.add.group()
+    moni = this.physics.add.group();    
     cursors = this.input.keyboard.createCursorKeys();
+    
     this.time.addEvent({
         delay: 2000,
         callback: spawnEnemy,
         callbackScope: this,
         loop: true
     });
-
+    
+    this.physics.add.overlap(dardo, moni, golpearDardo, null, this);
+    
+    vidaTexto = this.add.text(16, 16, 'Vida: ' + vida, { 
+        fontSize: '32px', 
+        fill: '#fff' 
+    });
 }
 
 function update() {
@@ -55,13 +64,26 @@ function update() {
     if (cursors.up.isDown) dardo.setVelocityY(-200);
     if (cursors.down.isDown) dardo.setVelocityY(200);
 
-    enemies.children.entries.forEach(moni => {
-        this.physics.moveToObject(moni, dardo, 100);
+    moni.children.entries.forEach(enemigo => {
+        this.physics.moveToObject(enemigo, dardo, 50);
     });
-    function spawnEnemy() {
+}
+
+function spawnEnemy() {
     let x = Phaser.Math.Between(0, 800);
     let y = Phaser.Math.Between(0, 600);
     let enemy = moni.create(x, y, 'enemigo');
+    enemy.setDisplaySize(60, 60);
     enemy.setCollideWorldBounds(true);
+}
+
+function golpearDardo(dardo, enemigo) {
+    vida -= 10;
+    vidaTexto.setText('Vida: ' + vida);
+    enemigo.destroy();
+    
+    if (vida <= 0) {
+        vidaTexto.setText('GAME OVER');
+        this.physics.pause();
     }
 }
