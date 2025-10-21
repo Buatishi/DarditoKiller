@@ -11,16 +11,14 @@ export class Player extends Entity {
         this.speed = 200;
         
         this.damage = 20;
-        this.attackRange = 100; 
+        this.attackRange = 125; 
         this.attackCooldown = 500; 
         this.canAttack = true;
         
         this.cursors = scene.input.keyboard.createCursorKeys();
         
-        scene.input.on('pointerdown', (pointer) => {
-            if (pointer.leftButtonDown()) {
-                this.attack();
-            }
+        scene.input.keyboard.on('keydown-Z', () => {
+            this.attack();
         });
         
         this.coins = 0;

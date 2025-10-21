@@ -24,6 +24,7 @@ export class Entity extends Phaser.Physics.Arcade.Sprite {
     
     die() {
         this.alive = false;
-        this.destroy();
+        this.setActive(false);
+        this.setVisible(false);
     }
 }

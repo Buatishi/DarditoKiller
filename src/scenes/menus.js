@@ -4,21 +4,17 @@ export class MainMenu extends Phaser.Scene {
     }
 
     preload() {
-        // Cargar recursos del menú si los hay
     }
 
     create() {
-        // Fondo
         this.add.rectangle(400, 300, 800, 600, 0x222222);
         
-        // Título
         this.add.text(400, 150, 'DARDITO KILLER', {
             fontSize: '64px',
             fill: '#ffffff',
             fontStyle: 'bold'
         }).setOrigin(0.5);
         
-        // Botón Jugar
         const playButton = this.add.text(400, 300, 'JUGAR', {
             fontSize: '48px',
             fill: '#00ff00',
@@ -38,7 +34,6 @@ export class MainMenu extends Phaser.Scene {
             this.scene.start('GameScene');
         });
         
-        // Instrucciones
         this.add.text(400, 450, 'Usa las flechas para moverte\nESC para pausar', {
             fontSize: '24px',
             fill: '#cccccc',
@@ -53,16 +48,13 @@ export class PauseMenu extends Phaser.Scene {
     }
 
     create() {
-        // Fondo semi-transparente
         this.add.rectangle(400, 300, 800, 600, 0x000000, 0.7);
         
-        // Texto de pausa
         this.add.text(400, 200, 'PAUSA', {
             fontSize: '64px',
             fill: '#ffffff'
         }).setOrigin(0.5);
         
-        // Botón Continuar
         const resumeButton = this.add.text(400, 300, 'CONTINUAR', {
             fontSize: '36px',
             fill: '#00ff00',
@@ -83,7 +75,6 @@ export class PauseMenu extends Phaser.Scene {
             this.scene.stop();
         });
         
-        // Botón Menú Principal
         const menuButton = this.add.text(400, 380, 'MENÚ PRINCIPAL', {
             fontSize: '36px',
             fill: '#ff0000',
@@ -105,7 +96,6 @@ export class PauseMenu extends Phaser.Scene {
             this.scene.start('MainMenu');
         });
         
-        // Permitir ESC para resumir
         this.input.keyboard.on('keydown-ESC', () => {
             this.scene.resume('GameScene');
             this.scene.stop();
@@ -119,21 +109,17 @@ export class GameOverMenu extends Phaser.Scene {
     }
 
     create(data) {
-        // data contiene { coins, wave }
         const coins = data.coins || 0;
         const wave = data.wave || 1;
         
-        // Fondo
         this.add.rectangle(400, 300, 800, 600, 0x220000);
         
-        // Título Game Over
         this.add.text(400, 150, 'GAME OVER', {
             fontSize: '64px',
             fill: '#ff0000',
             fontStyle: 'bold'
         }).setOrigin(0.5);
         
-        // Estadísticas
         this.add.text(400, 250, `Oleada alcanzada: ${wave}`, {
             fontSize: '32px',
             fill: '#ffffff'
@@ -144,7 +130,6 @@ export class GameOverMenu extends Phaser.Scene {
             fill: '#FFD700'
         }).setOrigin(0.5);
         
-        // Botón Reintentar
         const retryButton = this.add.text(400, 400, 'REINTENTAR', {
             fontSize: '40px',
             fill: '#00ff00',
@@ -164,7 +149,6 @@ export class GameOverMenu extends Phaser.Scene {
             this.scene.start('GameScene');
         });
         
-        // Botón Menú Principal
         const menuButton = this.add.text(400, 480, 'MENÚ PRINCIPAL', {
             fontSize: '32px',
             fill: '#ffffff',

@@ -4,7 +4,7 @@ import { Entity } from './entity.js';
 
 export class Enemy extends Entity {
     constructor(scene, x, y) {
-        super(scene, x, y, 'enemigo', 30);
+        super(scene, x, y, 'enemigo', 30 );
         
         this.setDisplaySize(60, 60);
         
@@ -12,7 +12,7 @@ export class Enemy extends Entity {
         this.damage = 10;
         this.coinReward = 5;
         this.health = 10
-        
+         
         this.player = null;
     }
     
