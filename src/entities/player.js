@@ -1,5 +1,4 @@
-// CLASE PLAYER
-// Maneja todo lo relacionado con el jugador: movimiento, ataque, inventario
+//maneja todo lo relacionado con el jugador: movimiento, ataque, inventario
 
 import { Entity } from './entity.js';
 
@@ -7,40 +6,33 @@ export class Player extends Entity {
     constructor(scene, x, y) {
         super(scene, x, y, 'jugador', 100);
         
-        this.setDisplaySize(60, 60);
+        this.setDisplaySize(80, 80);
         
-        // Velocidad de movimiento
         this.speed = 200;
         
-        // Stats de combate
         this.damage = 20;
-        this.attackRange = 80; // Rango de ataque
-        this.attackCooldown = 500; // Milisegundos entre ataques
+        this.attackRange = 100; 
+        this.attackCooldown = 500; 
         this.canAttack = true;
         
-        // Controles de teclado
         this.cursors = scene.input.keyboard.createCursorKeys();
         
-        // Configurar ataque con click
         scene.input.on('pointerdown', (pointer) => {
             if (pointer.leftButtonDown()) {
                 this.attack();
             }
         });
         
-        // Inventario y monedas
         this.coins = 0;
         this.inventory = [];
     }
     
-    // Se llama cada frame
     update() {
         if (!this.alive) return;
         
         this.handleMovement();
     }
     
-    // Manejo del movimiento con flechas
     handleMovement() {
         this.setVelocity(0);
         
@@ -60,12 +52,9 @@ export class Player extends Entity {
         }
     }
     
-    // Sistema de ataque
     attack() {
-        // Solo atacar si no está en cooldown
         if (!this.canAttack || !this.alive) return;
         
-        // Emitir evento de ataque (la escena lo manejará)
         this.scene.events.emit('playerAttack', {
             x: this.x,
             y: this.y,
@@ -73,19 +62,16 @@ export class Player extends Entity {
             damage: this.damage
         });
         
-        // Activar cooldown
         this.canAttack = false;
         this.scene.time.delayedCall(this.attackCooldown, () => {
             this.canAttack = true;
         });
         
-        // Animación visual simple de ataque
         this.showAttackAnimation();
     }
     
-    // Animación visual del ataque
     showAttackAnimation() {
-        // Crear un círculo que representa el área de ataque
+        //animacion de ataque 
         const attackCircle = this.scene.add.circle(
             this.x, 
             this.y, 
@@ -94,7 +80,7 @@ export class Player extends Entity {
             0.3
         );
         
-        // Hacer que desaparezca rápidamente
+        //sacar circulo
         this.scene.tweens.add({
             targets: attackCircle,
             alpha: 0,
@@ -103,7 +89,6 @@ export class Player extends Entity {
         });
     }
     
-    // Métodos para monedas
     addCoins(amount) {
         this.coins += amount;
     }
@@ -116,7 +101,6 @@ export class Player extends Entity {
         return false;
     }
     
-    // Override del método die para emitir evento
     die() {
         super.die();
         this.scene.events.emit('playerDied');
