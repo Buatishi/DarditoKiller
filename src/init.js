@@ -1,10 +1,11 @@
 import { MainMenu, PauseMenu, GameOverMenu } from './scenes/menus.js';
 import { GameScene } from './scenes/GameScene.js';
+import { ScoresScene } from './scenes/scores.js';
 
 const config = {
     type: Phaser.AUTO,
-    width: 800,
-    height: 600,
+    width: 1000,
+    height: 640,
     physics: { 
         default: 'arcade',
         arcade: { 
@@ -12,7 +13,7 @@ const config = {
             gravity: { y: 0 }
         }
     },
-    scene: [MainMenu, GameScene, PauseMenu, GameOverMenu]
+    scene: [MainMenu,ScoresScene, GameScene, PauseMenu, GameOverMenu]
 };
 
 const game = new Phaser.Game(config);

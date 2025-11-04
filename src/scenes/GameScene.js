@@ -14,9 +14,9 @@ export class GameScene extends Phaser.Scene {
     
     create() {
         let bg = this.add.image(400, 300, 'fondo');
-        bg.setDisplaySize(800, 600);
+        bg.setDisplaySize(innerWidth, innerHeight);
         
-        this.player = new Player(this, 400, 300);
+        this.player = new Player(this, 500, 300);
         
         this.enemyManager = new EnemyManager(this);
         this.enemyManager.setPlayer(this.player);
@@ -73,7 +73,7 @@ export class GameScene extends Phaser.Scene {
             this.coinsText.setText(`Monedas: ${this.player.coins}`);
             
             if (this.player.canAttack) {
-                this.attackText.setText('Click Izquierdo Atacar');
+                this.attackText.setText('Tecla Z - atacas');
             } else {
                 this.attackText.setText('Recargando...');
             }
@@ -92,22 +92,28 @@ export class GameScene extends Phaser.Scene {
         this.updateUI();
     }
     
-    onPlayerHitEnemy(player, enemy) {
+onPlayerHitEnemy(player, enemy) {
+    if (player.alive && enemy.alive) {
         player.takeDamage(enemy.damage);
+        
+        enemy.health = 0;
         enemy.die();
     }
+}
     
     onPlayerAttack(attackData) {
         this.enemyManager.enemies.children.entries.forEach(enemy => {
-            const distance = Phaser.Math.Distance.Between(
-                attackData.x, 
-                attackData.y, 
-                enemy.x, 
-                enemy.y
-            );
-            
-            if (distance <= attackData.range) {
-                enemy.takeDamage(attackData.damage);
+            if (enemy.alive) {
+                const distance = Phaser.Math.Distance.Between(
+                    attackData.x, 
+                    attackData.y, 
+                    enemy.x, 
+                    enemy.y
+                );
+                
+                if (distance <= attackData.range) {
+                    enemy.takeDamage(attackData.damage);
+                }
             }
         });
     }
@@ -122,7 +128,7 @@ export class GameScene extends Phaser.Scene {
         this.enemyManager.stopSpawning();
         this.physics.pause();
         
-        this.add.text(400, 300, 'GAME OVER', {
+        this.add.text(500, 300, 'GAME OVER', {
             fontSize: '64px',
             fill: '#ff0000',
             backgroundColor: '#000000cc',

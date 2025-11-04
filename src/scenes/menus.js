@@ -7,15 +7,15 @@ export class MainMenu extends Phaser.Scene {
     }
 
     create() {
-        this.add.rectangle(400, 300, 800, 600, 0x222222);
+        this.add.rectangle(400, 300, innerWidth, innerHeight, 0x222222);
         
-        this.add.text(400, 150, 'DARDITO KILLER', {
+        this.add.text(500, 150, 'DARDITO KILLER', {
             fontSize: '64px',
             fill: '#ffffff',
             fontStyle: 'bold'
         }).setOrigin(0.5);
         
-        const playButton = this.add.text(400, 300, 'JUGAR', {
+        const playButton = this.add.text(500, 300, 'JUGAR', {
             fontSize: '48px',
             fill: '#00ff00',
             backgroundColor: '#00000088',
@@ -33,8 +33,27 @@ export class MainMenu extends Phaser.Scene {
         playButton.on('pointerdown', () => {
             this.scene.start('GameScene');
         });
+
+        const scoresButton = this.add.text(500, 400, 'SCORES', {
+            fontSize: '48px',
+            fill: '#00ff00',
+            backgroundColor: '#00000088',
+            padding: { x: 20, y: 10 }
+        }).setOrigin(0.5).setInteractive();
         
-        this.add.text(400, 450, 'Usa las flechas para moverte\nESC para pausar', {
+        scoresButton.on('pointerover', () => {
+            scoresButton.setScale(1.1);
+        });
+        
+        scoresButton.on('pointerout', () => {
+            scoresButton.setScale(1);
+        });
+        
+        scoresButton.on('pointerdown', () => {
+            this.scene.start('ScoresScene');
+        });
+        
+        this.add.text(500, 550, 'Usa las flechas para moverte\nESC para pausar', {
             fontSize: '24px',
             fill: '#cccccc',
             align: 'center'
@@ -48,14 +67,14 @@ export class PauseMenu extends Phaser.Scene {
     }
 
     create() {
-        this.add.rectangle(400, 300, 800, 600, 0x000000, 0.7);
+        this.add.rectangle(500, 300, innerWidth, innerHeight, 0x000000, 0.7);
         
-        this.add.text(400, 200, 'PAUSA', {
+        this.add.text(500, 200, 'PAUSA', {
             fontSize: '64px',
             fill: '#ffffff'
         }).setOrigin(0.5);
         
-        const resumeButton = this.add.text(400, 300, 'CONTINUAR', {
+        const resumeButton = this.add.text(500, 300, 'CONTINUAR', {
             fontSize: '36px',
             fill: '#00ff00',
             backgroundColor: '#00000088',
@@ -75,7 +94,7 @@ export class PauseMenu extends Phaser.Scene {
             this.scene.stop();
         });
         
-        const menuButton = this.add.text(400, 380, 'MENÚ PRINCIPAL', {
+        const menuButton = this.add.text(500, 380, 'MENÚ PRINCIPAL', {
             fontSize: '36px',
             fill: '#ff0000',
             backgroundColor: '#00000088',
@@ -112,25 +131,25 @@ export class GameOverMenu extends Phaser.Scene {
         const coins = data.coins || 0;
         const wave = data.wave || 1;
         
-        this.add.rectangle(400, 300, 800, 600, 0x220000);
+        this.add.rectangle(500, 300, innerWidth, innerHeight, 0x220000);
         
-        this.add.text(400, 150, 'GAME OVER', {
+        this.add.text(500, 150, 'GAME OVER', {
             fontSize: '64px',
             fill: '#ff0000',
             fontStyle: 'bold'
         }).setOrigin(0.5);
         
-        this.add.text(400, 250, `Oleada alcanzada: ${wave}`, {
+        this.add.text(500, 250, `Oleada alcanzada: ${wave}`, {
             fontSize: '32px',
             fill: '#ffffff'
         }).setOrigin(0.5);
         
-        this.add.text(400, 300, `Monedas obtenidas: ${coins}`, {
+        this.add.text(500, 300, `Monedas obtenidas: ${coins}`, {
             fontSize: '32px',
             fill: '#FFD700'
         }).setOrigin(0.5);
         
-        const retryButton = this.add.text(400, 400, 'REINTENTAR', {
+        const retryButton = this.add.text(500, 400, 'REINTENTAR', {
             fontSize: '40px',
             fill: '#00ff00',
             backgroundColor: '#00000088',
@@ -149,7 +168,7 @@ export class GameOverMenu extends Phaser.Scene {
             this.scene.start('GameScene');
         });
         
-        const menuButton = this.add.text(400, 480, 'MENÚ PRINCIPAL', {
+        const menuButton = this.add.text(500, 480, 'MENÚ PRINCIPAL', {
             fontSize: '32px',
             fill: '#ffffff',
             backgroundColor: '#00000088',

@@ -4,14 +4,14 @@ import { Entity } from './entity.js';
 
 export class Enemy extends Entity {
     constructor(scene, x, y) {
-        super(scene, x, y, 'enemigo', 30 );
+        super(scene, x, y, 'enemigo', 30);
         
         this.setDisplaySize(60, 60);
         
         this.speed = 50;
-        this.damage = 10;
+        this.damage = 100;
         this.coinReward = 5;
-        this.health = 10
+        this.health = 10;
          
         this.player = null;
     }
@@ -26,9 +26,30 @@ export class Enemy extends Entity {
         this.scene.physics.moveToObject(this, this.player, this.speed);
     }
     
+    takeDamage(amount) {
+        if (!this.alive) return;
+        
+        this.health -= amount;
+        
+        if (this.health <= 0) {
+            this.die();
+        }
+    }
+    
     die() {
+        if (!this.alive) return;  
+        
+        if (this.body) {
+            this.body.enable = false;
+        }
+        
         this.scene.events.emit('enemyKilled', this.coinReward);
+        
         super.die();
+        
+        this.scene.time.delayedCall(100, () => {
+            this.destroy();
+        });
     }
 }
 
@@ -61,10 +82,10 @@ export class EnemyManager {
         let x, y;
         
         switch(side) {
-            case 0: x = Phaser.Math.Between(0, 800); y = 0; break;      
-            case 1: x = 800; y = Phaser.Math.Between(0, 600); break;    
-            case 2: x = Phaser.Math.Between(0, 800); y = 600; break;    
-            case 3: x = 0; y = Phaser.Math.Between(0, 600); break;      
+            case 0: x = Phaser.Math.Between(0, innerWidth); y = 0; break;      
+            case 1: x = innerWidth; y = Phaser.Math.Between(0, innerHeight); break;    
+            case 2: x = Phaser.Math.Between(0, innerWidth); y = innerHeight; break;    
+            case 3: x = 0; y = Phaser.Math.Between(0, innerHeight); break;      
         }
         
         const enemy = new Enemy(this.scene, x, y);
