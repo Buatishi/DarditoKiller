@@ -1,3 +1,4 @@
+import Phaser from 'phaser';
 import { TEXT_COLORS } from '../config/colors.js';
 
 export class MainMenu extends Phaser.Scene {
