@@ -1,120 +1,341 @@
-//maneja los enemigos y el spawn
-
+// Maneja enemigos individuales y el sistema de spawn
 import { Entity } from './entity.js';
 
 export class Enemy extends Entity {
-    constructor(scene, x, y) {
-        super(scene, x, y, 'enemigo', 30);
-        
-        this.setDisplaySize(60, 60);
-        
-        this.speed = 50;
-        this.damage = 100;
-        this.coinReward = 5;
-        this.health = 10;
-         
-        this.player = null;
-    }
-    
-    setTarget(player) {
-        this.player = player;
-    }
-    
-    update() {
-        if (!this.alive || !this.player || !this.player.alive) return;
-        
-        this.scene.physics.moveToObject(this, this.player, this.speed);
-    }
-    
-    takeDamage(amount) {
-        if (!this.alive) return;
-        
-        this.health -= amount;
-        
-        if (this.health <= 0) {
-            this.die();
-        }
-    }
-    
-    die() {
-        if (!this.alive) return;  
-        
-        if (this.body) {
-            this.body.enable = false;
-        }
-        
-        this.scene.events.emit('enemyKilled', this.coinReward);
-        
-        super.die();
-        
-        this.scene.time.delayedCall(100, () => {
-            this.destroy();
-        });
-    }
+  speed;
+  damage;
+  coinReward;
+  target;
+  circle; // Nueva propiedad para el círculo visual
+
+constructor(scene, x, y, health, speed, damage) {
+  // Ya no usamos textura, usamos null
+  super(scene, x, y, null, health);
+
+  // Crear círculo visual
+  this.circle = scene.add.circle(0, 0, 30, 0xe94560); // Radio 30, color rojo/rosa
+  this.circle.setStrokeStyle(2, 0xff6b6b, 0.8); // Borde más claro
+  
+  this.speed = speed;
+  this.damage = damage;
+  this.coinReward = 10;
+  this.target = null;
+  
+  // IMPORTANTE: Configurar hitbox circular correcta
+  // Primero desactivar el body rectangular por defecto
+  this.body.setSize(60, 60); // Tamaño del área de colisión (diámetro = radio * 2)
+  this.setCircle(30); // Radio 30 = diámetro 60
+  
+  // Centrar el offset del body para que coincida con el círculo visual
+  this.body.setOffset(-15, -15); // Ajustar el offset para centrar la colisión
 }
 
+  setTarget(player) {
+    this.target = player;
+  }
+
+  update() {
+    if (!this.alive || !this.target || !this.target.alive) return;
+
+    // Actualizar posición del círculo para que siga al sprite
+    if (this.circle) {
+      this.circle.setPosition(this.x, this.y);
+    }
+
+    // Perseguir al jugador
+    const angle = Phaser.Math.Angle.Between(
+      this.x,
+      this.y,
+      this.target.x,
+      this.target.y
+    );
+
+    this.setVelocity(
+      Math.cos(angle) * this.speed,
+      Math.sin(angle) * this.speed
+    );
+  }
+
+  takeDamage(damage) {
+    if (!this.alive) return;
+
+    this.health -= damage;
+
+    // Efecto visual en el círculo
+    if (this.circle) {
+      this.circle.setFillStyle(0xffffff); // Flash blanco
+      this.scene.time.delayedCall(100, () => {
+        if (this.circle && this.alive) {
+          this.circle.setFillStyle(0xe94560); // Volver al color original
+        }
+      });
+    }
+
+    if (this.health <= 0) {
+      this.health = 0;
+      this.die();
+    }
+  }
+
+  die() {
+    this.alive = false;
+    
+    // Destruir círculo visual
+    if (this.circle) {
+      this.circle.destroy();
+    }
+    
+    // Llamar al manager
+    if (this.scene && this.scene.enemyManager) {
+      this.scene.enemyManager.onEnemyKilled(this.coinReward);
+    }
+    
+    this.destroy();
+  }
+
+  destroy() {
+    // Asegurarse de limpiar el círculo
+    if (this.circle) {
+      this.circle.destroy();
+      this.circle = null;
+    }
+    super.destroy();
+  }
+}
 
 export class EnemyManager {
-    constructor(scene) {
-        this.scene = scene;
-        this.enemies = scene.physics.add.group();
-        this.player = null;
-        this.spawnTimer = null;
-    }
+  scene;
+  enemies;
+  player;
+  spawnTimer;
+  currentWave;
+  enemiesPerWave;
+  enemiesKilledThisWave;
+  baseEnemyHealth;
+  baseEnemySpeed;
+  baseEnemyDamage;
+  waveInProgress;
+
+  constructor(scene) {
+    this.scene = scene;
+    this.enemies = scene.physics.add.group();
+    this.player = null;
+    this.spawnTimer = null;
     
-    startSpawning() {
-        this.spawnTimer = this.scene.time.addEvent({
-            delay: 2000,
-            callback: this.spawnEnemy,
-            callbackScope: this,
-            loop: true
-        });
+    // Inicializar sistema de oleadas
+    this.currentWave = 1;
+    this.enemiesPerWave = 5;
+    this.enemiesKilledThisWave = 0;
+    this.baseEnemyHealth = 30;
+    this.baseEnemySpeed = 80;
+    this.baseEnemyDamage = 10;
+    this.waveInProgress = true;
+  }
+
+  setPlayer(player) {
+    this.player = player;
+  }
+
+  // Inicia el spawn continuo de enemigos
+  startSpawning() {
+    this.spawnTimer = this.scene.time.addEvent({
+      delay: 2000,
+      callback: this.spawnEnemy,
+      callbackScope: this,
+      loop: true
+    });
+  }
+
+  stopSpawning() {
+    if (this.spawnTimer) {
+      this.spawnTimer.remove();
+      this.spawnTimer = null;
     }
+  }
+
+  // Spawn de un enemigo con estadísticas según la oleada actual
+  spawnEnemy() {
+    // Verificaciones más robustas
+    if (!this.player || !this.waveInProgress || !this.enemies || !this.scene || !this.scene.physics) {
+      return;
+    }
+
+    const side = Phaser.Math.Between(0, 3);
+    let x, y;
+
+    // Spawn en los bordes de la pantalla
+    switch (side) {
+      case 0: // Arriba
+        x = Phaser.Math.Between(0, this.scene.scale.width);
+        y = -50;
+        break;
+      case 1: // Derecha
+        x = this.scene.scale.width + 50;
+        y = Phaser.Math.Between(0, this.scene.scale.height);
+        break;
+      case 2: // Abajo
+        x = Phaser.Math.Between(0, this.scene.scale.width);
+        y = this.scene.scale.height + 50;
+        break;
+      default: // Izquierda
+        x = -50;
+        y = Phaser.Math.Between(0, this.scene.scale.height);
+        break;
+    }
+
+    // Calcular estadísticas incrementadas según la oleada
+    const waveMultiplier = 1 + (this.currentWave - 1) * 0.15; // 15% de incremento por oleada
+    const health = Math.floor(this.baseEnemyHealth * waveMultiplier);
+    const speed = Math.floor(this.baseEnemySpeed * waveMultiplier);
+    const damage = Math.floor(this.baseEnemyDamage * waveMultiplier);
+
+    const enemy = new Enemy(this.scene, x, y, health, speed, damage);
+    enemy.setTarget(this.player);
     
-    stopSpawning() {
-        if (this.spawnTimer) {
-            this.spawnTimer.remove();
+    // Verificar que el grupo existe antes de agregar
+    if (this.enemies && this.enemies.active) {
+      this.enemies.add(enemy);
+    }
+  }
+
+  // Se llama cuando un enemigo es eliminado
+  onEnemyKilled(coinReward) {
+    // IMPORTANTE: Solo contar kills cuando hay oleada en progreso
+    if (!this.waveInProgress) return;
+
+    this.enemiesKilledThisWave++;
+    
+    // Dar monedas al jugador
+    if (this.player && this.player.alive) {
+      this.player.addCoins(coinReward);
+    }
+
+    // Verificar si se completó la oleada
+    if (this.enemiesKilledThisWave >= this.enemiesPerWave) {
+      this.completeWave();
+    }
+  }
+
+  completeWave() {
+    this.waveInProgress = false;
+    this.stopSpawning();
+
+    // Eliminar todos los enemigos restantes
+    const enemiesArray = [...this.enemies.children.entries];
+    enemiesArray.forEach(enemy => {
+      if (enemy && enemy.active && enemy.alive) {
+        enemy.alive = false;
+        if (enemy.circle) {
+          enemy.circle.destroy();
         }
+        enemy.setVisible(false);
+        enemy.setActive(false);
+        enemy.destroy();
+      }
+    });
+    
+    // Fondo del mensaje
+    const messageBg = this.scene.add.rectangle(
+      this.scene.scale.width / 2,
+      this.scene.scale.height / 2,
+      400, 120,
+      0x1a1a2e, 0.9
+    );
+    
+    const messageBorder = this.scene.add.rectangle(
+      this.scene.scale.width / 2,
+      this.scene.scale.height / 2,
+      400, 120
+    ).setStrokeStyle(3, 0x00d9a3, 0.8);
+    
+    // Texto del mensaje
+    const message = this.scene.add.text(
+      this.scene.scale.width / 2,
+      this.scene.scale.height / 2,
+      `¡OLEADA ${this.currentWave} COMPLETADA!`,
+      {
+        fontSize: '36px',
+        color: '#00d9a3',
+        fontFamily: 'Arial',
+        fontStyle: 'bold'
+      }
+    ).setOrigin(0.5);
+
+    // Animar el mensaje
+    messageBg.setScale(0.5).setAlpha(0);
+    messageBorder.setScale(0.5).setAlpha(0);
+    message.setScale(0.5).setAlpha(0);
+    
+    this.scene.tweens.add({
+      targets: [messageBg, messageBorder, message],
+      scale: 1,
+      alpha: 1,
+      duration: 300,
+      ease: 'Back.out'
+    });
+
+    // Después de 2 segundos, iniciar siguiente oleada
+    this.scene.time.delayedCall(2000, () => {
+      messageBg.destroy();
+      messageBorder.destroy();
+      message.destroy();
+      this.startNextWave();
+    });
+  }
+
+  // Inicia la siguiente oleada
+  startNextWave() {
+    this.currentWave++;
+    this.enemiesKilledThisWave = 0;
+    this.enemiesPerWave += 2; // Incrementar enemigos requeridos por oleada
+    this.waveInProgress = true;
+
+    // Emitir evento para actualizar UI
+    this.scene.events.emit('waveChanged', this.currentWave);
+
+    // Reiniciar spawn
+    this.startSpawning();
+  }
+
+  updateAll() {
+    this.enemies.children.entries.forEach((enemy) => {
+      if (enemy.alive) {
+        enemy.update();
+      }
+    });
+  }
+
+  // Obtener información de la oleada actual
+  getWaveInfo() {
+    return {
+      currentWave: this.currentWave,
+      enemiesKilled: this.enemiesKilledThisWave,
+      enemiesRequired: this.enemiesPerWave,
+      progress: `${this.enemiesKilledThisWave}/${this.enemiesPerWave}`
+    };
+  }
+
+  destroy() {
+    // Detener spawn
+    this.stopSpawning();
+    
+    // IMPORTANTE: Remover event listener
+    if (this.scene && this.scene.events) {
+      this.scene.events.off('enemyKilled', this.onEnemyKilled, this);
     }
     
-    spawnEnemy() {
-        const side = Phaser.Math.Between(0, 3);
-        let x, y;
-        
-        switch(side) {
-            case 0: x = Phaser.Math.Between(0, innerWidth); y = 0; break;      
-            case 1: x = innerWidth; y = Phaser.Math.Between(0, innerHeight); break;    
-            case 2: x = Phaser.Math.Between(0, innerWidth); y = innerHeight; break;    
-            case 3: x = 0; y = Phaser.Math.Between(0, innerHeight); break;      
+    // Destruir todos los enemigos
+    if (this.enemies) {
+      const enemiesArray = [...this.enemies.children.entries];
+      enemiesArray.forEach(enemy => {
+        if (enemy && enemy.active && enemy.scene) {
+          // Destruir círculo si existe
+          if (enemy.circle) {
+            enemy.circle.destroy();
+          }
+          enemy.destroy();
         }
-        
-        const enemy = new Enemy(this.scene, x, y);
-        
-        if (this.player) {
-            enemy.setTarget(this.player);
-        }
-        
-        this.enemies.add(enemy);
-        return enemy;
+      });
     }
-    
-    setPlayer(player) {
-        this.player = player;
-        
-        this.enemies.children.entries.forEach(enemy => {
-            enemy.setTarget(player);
-        });
-    }
-    
-    updateAll() {
-        this.enemies.children.entries.forEach(enemy => {
-            if (enemy.update) {
-                enemy.update();
-            }
-        });
-    }
-    
-    clearAll() {
-        this.enemies.clear(true, true);
-    }
+  }
 }

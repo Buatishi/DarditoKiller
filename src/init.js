@@ -1,4 +1,4 @@
-import { MainMenu, PauseMenu, GameOverMenu } from './scenes/menus.js';
+import { MainMenu, PauseMenu} from './scenes/menus.js';
 import { GameScene } from './scenes/GameScene.js';
 import { ScoresScene } from './scenes/scores.js';
 
@@ -9,11 +9,11 @@ const config = {
     physics: { 
         default: 'arcade',
         arcade: { 
-            debug: false,
+            debug: true,
             gravity: { y: 0 }
         }
     },
-    scene: [MainMenu,ScoresScene, GameScene, PauseMenu, GameOverMenu]
+    scene: [MainMenu,ScoresScene, GameScene, PauseMenu]
 };
 
 const game = new Phaser.Game(config);
