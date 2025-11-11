@@ -1,4 +1,3 @@
-import Phaser from 'phaser';
 import { Player } from '../entities/player.js';
 import { EnemyManager } from '../entities/enemy.js';
 import { TEXT_COLORS } from '../config/colors.js';
