@@ -1,6 +1,7 @@
-import { MainMenu, PauseMenu} from './scenes/menus.js';
+import { MainMenu, PauseMenu } from './scenes/menus.js';
 import { GameScene } from './scenes/GameScene.js';
 import { ScoresScene } from './scenes/scores.js';
+import { ShopScene } from './scenes/shop.js'; // NUEVO
 
 const config = {
     type: Phaser.AUTO,
@@ -9,11 +10,11 @@ const config = {
     physics: { 
         default: 'arcade',
         arcade: { 
-            debug: true,
+            debug: false,
             gravity: { y: 0 }
         }
     },
-    scene: [MainMenu,ScoresScene, GameScene, PauseMenu]
+    scene: [MainMenu, ScoresScene, GameScene, PauseMenu, ShopScene] // Agregar ShopScene
 };
 
 const game = new Phaser.Game(config);

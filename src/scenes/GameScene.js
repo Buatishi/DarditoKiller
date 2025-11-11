@@ -13,9 +13,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image('fondo', 'assets/scenes/pastito.png');
     this.load.image('jugador', 'assets/entities/prota.png');
-    this.load.image('enemigo', 'assets/entities/moni.png');
   }
 
 create() {

@@ -216,86 +216,94 @@ export class EnemyManager {
     }
   }
 
-  completeWave() {
-    this.waveInProgress = false;
-    this.stopSpawning();
+completeWave() {
+  this.waveInProgress = false;
+  this.stopSpawning();
 
-    // Eliminar todos los enemigos restantes
-    const enemiesArray = [...this.enemies.children.entries];
-    enemiesArray.forEach(enemy => {
-      if (enemy && enemy.active && enemy.alive) {
-        enemy.alive = false;
-        if (enemy.circle) {
-          enemy.circle.destroy();
-        }
-        enemy.setVisible(false);
-        enemy.setActive(false);
-        enemy.destroy();
+  // === LIMPIAR ENEMIGOS RESTANTES ===
+  const enemiesArray = [...this.enemies.children.entries];
+  enemiesArray.forEach(enemy => {
+    if (enemy && enemy.active && enemy.alive) {
+      enemy.alive = false;
+      if (enemy.circle) {
+        enemy.circle.destroy();
       }
-    });
-    
-    // Fondo del mensaje
-    const messageBg = this.scene.add.rectangle(
-      this.scene.scale.width / 2,
-      this.scene.scale.height / 2,
-      400, 120,
-      0x1a1a2e, 0.9
-    );
-    
-    const messageBorder = this.scene.add.rectangle(
-      this.scene.scale.width / 2,
-      this.scene.scale.height / 2,
-      400, 120
-    ).setStrokeStyle(3, 0x00d9a3, 0.8);
-    
-    // Texto del mensaje
-    const message = this.scene.add.text(
-      this.scene.scale.width / 2,
-      this.scene.scale.height / 2,
-      `¡OLEADA ${this.currentWave} COMPLETADA!`,
-      {
-        fontSize: '36px',
-        color: '#00d9a3',
-        fontFamily: 'Arial',
-        fontStyle: 'bold'
-      }
-    ).setOrigin(0.5);
+      enemy.setVisible(false);
+      enemy.setActive(false);
+      enemy.destroy();
+    }
+  });
+  
+  // === MENSAJE DE OLEADA COMPLETADA ===
+  const messageBg = this.scene.add.rectangle(
+    this.scene.scale.width / 2,
+    this.scene.scale.height / 2,
+    400, 120,
+    0x1a1a2e, 0.9
+  );
+  
+  const messageBorder = this.scene.add.rectangle(
+    this.scene.scale.width / 2,
+    this.scene.scale.height / 2,
+    400, 120
+  ).setStrokeStyle(3, 0x00d9a3, 0.8);
+  
+  const message = this.scene.add.text(
+    this.scene.scale.width / 2,
+    this.scene.scale.height / 2,
+    `¡OLEADA ${this.currentWave} COMPLETADA!`,
+    {
+      fontSize: '36px',
+      color: '#00d9a3',
+      fontFamily: 'Arial',
+      fontStyle: 'bold'
+    }
+  ).setOrigin(0.5);
 
-    // Animar el mensaje
-    messageBg.setScale(0.5).setAlpha(0);
-    messageBorder.setScale(0.5).setAlpha(0);
-    message.setScale(0.5).setAlpha(0);
-    
-    this.scene.tweens.add({
-      targets: [messageBg, messageBorder, message],
-      scale: 1,
-      alpha: 1,
-      duration: 300,
-      ease: 'Back.out'
-    });
+  // === ANIMACIÓN DEL MENSAJE ===
+  messageBg.setScale(0.5).setAlpha(0);
+  messageBorder.setScale(0.5).setAlpha(0);
+  message.setScale(0.5).setAlpha(0);
+  
+  this.scene.tweens.add({
+    targets: [messageBg, messageBorder, message],
+    scale: 1,
+    alpha: 1,
+    duration: 300,
+    ease: 'Back.out'
+  });
 
-    // Después de 2 segundos, iniciar siguiente oleada
-    this.scene.time.delayedCall(2000, () => {
-      messageBg.destroy();
-      messageBorder.destroy();
-      message.destroy();
-      this.startNextWave();
-    });
-  }
+  // === DESPUÉS DE 1.5 SEGUNDOS, ABRIR TIENDA ===
+  this.scene.time.delayedCall(1500, () => {
+    messageBg.destroy();
+    messageBorder.destroy();
+    message.destroy();
+    
+    // **FIX: Solo abrir tienda si el jugador sigue vivo**
+    if (this.player && this.player.alive) {
+      this.scene.scene.pause('GameScene');
+      this.scene.scene.launch('ShopScene', {
+        player: this.player,
+        wave: this.currentWave
+      });
+    }
+    // Si el jugador murió, no hacemos nada (el game over ya se mostró)
+  });
+}
 
   // Inicia la siguiente oleada
   startNextWave() {
-    this.currentWave++;
-    this.enemiesKilledThisWave = 0;
-    this.enemiesPerWave += 2; // Incrementar enemigos requeridos por oleada
-    this.waveInProgress = true;
+  this.currentWave++;
+  this.enemiesKilledThisWave = 0;
+  this.enemiesPerWave += 2;
+  this.waveInProgress = true;
 
-    // Emitir evento para actualizar UI
-    this.scene.events.emit('waveChanged', this.currentWave);
+  // Emitir evento para actualizar UI
+  this.scene.events.emit('waveChanged', this.currentWave);
 
-    // Reiniciar spawn
-    this.startSpawning();
-  }
+  // Reiniciar spawn
+  this.startSpawning();
+}
 
   updateAll() {
     this.enemies.children.entries.forEach((enemy) => {

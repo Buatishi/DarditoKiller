@@ -29,6 +29,17 @@ export class Player extends Entity {
     scene.input.keyboard.on('keydown-Z', () => {
       this.attack();
     });
+
+    scene.time.addEvent({
+    delay: 3000,
+    callback: () => {
+      if (this.alive && this.regeneration > 0) {
+        this.health = Math.min(this.maxHealth, this.health + this.regeneration);
+      }
+    },
+    loop: true
+  });
+
   }
 
   update() {
