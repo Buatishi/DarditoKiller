@@ -5,8 +5,8 @@ import { ShopScene } from './scenes/shop.js'; // NUEVO
 
 const config = {
     type: Phaser.AUTO,
-    width: 1000,
-    height: 640,
+    width: 1000, //1000
+    height: 640, //640
     physics: { 
         default: 'arcade',
         arcade: { 

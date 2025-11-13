@@ -1,4 +1,4 @@
-import { TEXT_COLORS } from '../config/colors.js';
+import { COLORS, TEXT_COLORS } from '../config/colors.js';
 
 export class MainMenu extends Phaser.Scene {
     constructor() {
@@ -7,7 +7,7 @@ export class MainMenu extends Phaser.Scene {
 
     create() {
         // Fondo simple
-        this.add.rectangle(500, 300, innerWidth, innerHeight, 0x1a1a2e);
+        this.add.rectangle(500, 300, innerWidth, innerHeight, COLORS.background);
         
         // Título simple en cyan
         this.add.text(500, 150, 'DARDITO KILLER', {
@@ -81,7 +81,7 @@ export class PauseMenu extends Phaser.Scene {
         // Contenedor del menú
         const pauseBg = this.add.rectangle(500, 300, 400, 300, 0x1a1a2e, 0.95);
         const pauseBorder = this.add.rectangle(500, 300, 400, 300)
-            .setStrokeStyle(3, 0x00d9a3, 0.6);
+            .setStrokeStyle(3, COLORS.background, 0.6);
         
         // Título PAUSA
         this.add.text(500, 200, 'PAUSA', {

@@ -1,6 +1,7 @@
 import { Player } from '../entities/player.js';
 import { EnemyManager } from '../entities/enemy.js';
-import { TEXT_COLORS } from '../config/colors.js';
+import { TEXT_COLORS as COLORS } from '../config/colors.js';
+
 
 
 export class GameScene extends Phaser.Scene {
@@ -20,9 +21,6 @@ create() {
     this.events.off('playerDied');
     this.events.off('playerAttack');
     this.events.off('waveChanged');
-
-    let bg = this.add.image(400, 300, 'fondo');
-    bg.setDisplaySize(innerWidth, innerHeight);
     
     // Fondo base
     this.add.rectangle(500, 320, innerWidth, innerHeight, 0x1a1a2e);
@@ -43,6 +41,8 @@ create() {
 
     this.player = new Player(this, 500, 300);
     
+    this.player.setCollideWorldBounds(true);  // No puede salir de la pantalla
+
     this.enemyManager = new EnemyManager(this);
     this.enemyManager.setPlayer(this.player);
     this.enemyManager.startSpawning();
@@ -92,35 +92,35 @@ shutdown() {
     
 createUI() {
     // Vida del jugador - con borde rojo
-    const healthBg = this.add.rectangle(90, 30, 160, 50, 0x1a1a2e, 0.8);
+    const healthBg = this.add.rectangle(90, 30, 160, 50, COLORS.background, 0.8);
     const healthBorder = this.add.rectangle(90, 30, 160, 50)
-        .setStrokeStyle(2, 0xe94560, 0.5);
+        .setStrokeStyle(2, COLORS.accent, 0.5);
     
     this.healthText = this.add.text(90, 30, '', {
         fontSize: '20px',
-        color: TEXT_COLORS.red,
+        color: COLORS.red,
         fontFamily: 'Arial'
     }).setOrigin(0.5);
 
     // Monedas - con borde amarillo
-    const coinsBg = this.add.rectangle(90, 85, 140, 45, 0x1a1a2e, 0.8);
+    const coinsBg = this.add.rectangle(90, 85, 140, 45, COLORS.background, 0.8);
     const coinsBorder = this.add.rectangle(90, 85, 140, 45)
-        .setStrokeStyle(2, 0xffd700, 0.5);
+        .setStrokeStyle(2, COLORS.accent, 0.5);
     
     this.coinsText = this.add.text(90, 85, '', {
         fontSize: '20px',
-        color: TEXT_COLORS.yellow,
+        color: COLORS.yellow,
         fontFamily: 'Arial'
     }).setOrigin(0.5);
 
     // Estado de ataque - con borde cyan
-    const attackBg = this.add.rectangle(90, 135, 140, 40, 0x1a1a2e, 0.8);
+    const attackBg = this.add.rectangle(90, 135, 140, 40, COLORS.background, 0.8);
     const attackBorder = this.add.rectangle(90, 135, 140, 40)
-        .setStrokeStyle(2, 0x00d9a3, 0.4);
+        .setStrokeStyle(2, COLORS.accent, 0.4);
     
     this.attackText = this.add.text(90, 135, '', {
         fontSize: '16px',
-        color: TEXT_COLORS.cyan,
+        color: COLORS.cyan,
         fontFamily: 'Arial'
     }).setOrigin(0.5);
 
@@ -143,7 +143,7 @@ createUI() {
         '',
         {
             fontSize: '28px',
-            color: TEXT_COLORS.cyan,
+            color: COLORS.cyan,
             fontFamily: 'Arial',
             fontStyle: 'bold'
         }
@@ -156,7 +156,7 @@ createUI() {
         '',
         {
             fontSize: '16px',
-            color: TEXT_COLORS.text,
+            color: COLORS.text,
             fontFamily: 'Arial'
         }
     ).setOrigin(0.5);
@@ -167,7 +167,7 @@ createUI() {
   updateUI() {
     if (this.player && this.player.alive) {
         this.healthText.setText(`❤ ${this.player.health}/${this.player.maxHealth}`);
-        this.coinsText.setText(`🪙 ${this.player.coins}`);
+        this.coinsText.setText(`💰 ${this.player.coins}`);
 
         if (this.player.canAttack) {
             this.attackText.setText('Z - Atacar');

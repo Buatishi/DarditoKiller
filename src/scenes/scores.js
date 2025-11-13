@@ -1,4 +1,4 @@
-import { TEXT_COLORS } from '../config/colors.js';
+import { COLORS,TEXT_COLORS } from '../config/colors.js';
 
 export class ScoresScene extends Phaser.Scene {
     constructor() {
@@ -6,7 +6,7 @@ export class ScoresScene extends Phaser.Scene {
     }
 
     create(){
-        this.add.rectangle(500, 300, innerWidth, innerHeight, 0x1a1a2e);
+        this.add.rectangle(500, 300, innerWidth, innerHeight, COLORS.background);
         
         this.add.text(500, 100, 'PUNTUACIONES', {  
             fontSize: '56px',

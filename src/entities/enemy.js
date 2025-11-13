@@ -1,5 +1,6 @@
 // Maneja enemigos individuales y el sistema de spawn
 import { Entity } from './entity.js';
+import { COLORS, TEXT_COLORS } from '../config/colors.js';
 
 export class Enemy extends Entity {
   speed;
@@ -13,7 +14,7 @@ constructor(scene, x, y, health, speed, damage) {
   super(scene, x, y, null, health);
 
   // Crear círculo visual
-  this.circle = scene.add.circle(0, 0, 30, 0xe94560); // Radio 30, color rojo/rosa
+  this.circle = scene.add.circle(0, 0, 30, COLORS.accent); // Radio 30, color rojo/rosa
   this.circle.setStrokeStyle(2, 0xff6b6b, 0.8); // Borde más claro
   
   this.speed = speed;
@@ -139,7 +140,7 @@ export class EnemyManager {
   // Inicia el spawn continuo de enemigos
   startSpawning() {
     this.spawnTimer = this.scene.time.addEvent({
-      delay: 2000,
+      delay: 1000,
       callback: this.spawnEnemy,
       callbackScope: this,
       loop: true

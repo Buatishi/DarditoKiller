@@ -1,4 +1,6 @@
 import { getRandomItems } from '../config/items.js';
+import { COLORS, TEXT_COLORS } from '../config/colors.js';
+
 
 export class ShopScene extends Phaser.Scene {
   constructor() {
@@ -13,7 +15,7 @@ export class ShopScene extends Phaser.Scene {
 
   create() {
     // === FONDO ===
-    this.add.rectangle(500, 320, innerWidth, innerHeight, 0x1a1a2e);
+    this.add.rectangle(500, 320, innerWidth, innerHeight, COLORS.background);
     
     // === TÍTULO ===
     this.add.text(500, 80, 'TIENDA', {
@@ -55,7 +57,7 @@ export class ShopScene extends Phaser.Scene {
   // === CREAR UNA TARJETA DE ITEM ===
   createItemCard(item, x, y) {
     // Fondo de la tarjeta
-    const cardBg = this.add.rectangle(x, y, 200, 300, 0x16213e, 0.9);
+    const cardBg = this.add.rectangle(x, y, 200, 300, TEXT_COLORS.backgroundLight, 0.9);
     const cardBorder = this.add.rectangle(x, y, 200, 300)
       .setStrokeStyle(2, 0x00d9a3, 0.5);
 
