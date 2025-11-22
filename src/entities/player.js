@@ -12,7 +12,6 @@ export class Player extends Entity {
   inventory;
 
   constructor(scene, x, y) {
-    // 'jugador' debe coincidir con la clave usada en preload
     super(scene, x, y, 'jugador', 100);
 
     this.setDisplaySize(80, 80);
@@ -21,8 +20,11 @@ export class Player extends Entity {
     this.attackRange = 125;
     this.attackCooldown = 500;
     this.canAttack = true;
+    this.cooldownEndTime = 0;
     this.coins = 0;
     this.inventory = [];
+    this.shielded = false;
+    this.shieldEndTime = 0;
 
     this.cursors = scene.input.keyboard.createCursorKeys();
 
@@ -67,6 +69,7 @@ export class Player extends Entity {
     });
 
     this.canAttack = false;
+    this.cooldownEndTime = this.scene.time.now + this.attackCooldown;
     this.scene.time.delayedCall(this.attackCooldown, () => {
       this.canAttack = true;
     });
@@ -103,18 +106,28 @@ export class Player extends Entity {
     return false;
   }
 
+  takeDamage(damage) {
+    if (!this.alive) return;
+
+    // Verificar si tiene escudo
+    if (this.shielded) {
+      // Escudo absorbe el daño completamente
+      return;
+    }
+
+    super.takeDamage(damage);
+  }
+
   die() {
     super.die();
     this.scene.events.emit('playerDied');
   }
 
 destroy() {
-  // Limpiar el listener del ataque
   if (this.scene && this.scene.input && this.scene.input.keyboard) {
     this.scene.input.keyboard.off('keydown-Z');
   }
   
-  // Llamar al destroy del padre
   super.destroy();
 } 
   

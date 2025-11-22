@@ -1,4 +1,3 @@
-// Maneja enemigos individuales y el sistema de spawn
 import { Entity } from './entity.js';
 import { COLORS, TEXT_COLORS } from '../config/colors.js';
 
@@ -7,10 +6,9 @@ export class Enemy extends Entity {
   damage;
   coinReward;
   target;
-  circle; // Nueva propiedad para el círculo visual
+  circle;
 
 constructor(scene, x, y, health, speed, damage) {
-  // Ya no usamos textura, usamos null
   super(scene, x, y, null, health);
 
   // Crear círculo visual
@@ -21,6 +19,7 @@ constructor(scene, x, y, health, speed, damage) {
   this.damage = damage;
   this.coinReward = 10;
   this.target = null;
+  this.frozen = false;
   
   // IMPORTANTE: Configurar hitbox circular correcta
   // Primero desactivar el body rectangular por defecto
@@ -37,6 +36,9 @@ constructor(scene, x, y, health, speed, damage) {
 
   update() {
     if (!this.alive || !this.target || !this.target.alive) return;
+
+    // Si está congelado, no se mueve
+    if (this.frozen) return;
 
     // Actualizar posición del círculo para que siga al sprite
     if (this.circle) {

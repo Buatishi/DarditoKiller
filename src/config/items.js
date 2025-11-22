@@ -1,4 +1,3 @@
-// === LISTA DE TODOS LOS ITEMS DISPONIBLES ===
 // Cada item tiene:
 // - id: identificador único
 // - name: nombre que se muestra
@@ -15,8 +14,8 @@ export const ITEMS_POOL = [
     cost: 70,
     icon: '❤️',
     effect: (player) => {
-      player.maxHealth += 20;  // Aumenta vida máxima
-      player.health += 20;      // Y también la vida actual
+      player.maxHealth += 20; 
+      player.health += 20;
     }
   },
   {
@@ -26,7 +25,7 @@ export const ITEMS_POOL = [
     cost: 70,
     icon: '👟',
     effect: (player) => {
-      player.speed += 30;  // El jugador se mueve más rápido
+      player.speed += 30; 
     }
   },
   {
@@ -36,7 +35,7 @@ export const ITEMS_POOL = [
     cost: 90,
     icon: '⚔️',
     effect: (player) => {
-      player.damage += 10;  // Cada ataque hace más daño
+      player.damage += 10; 
     }
   },
   {
@@ -46,7 +45,7 @@ export const ITEMS_POOL = [
     cost: 65,
     icon: '🎯',
     effect: (player) => {
-      player.attackRange += 15;  // Ataca desde más lejos
+      player.attackRange += 15;  
     }
   },
   {
@@ -56,7 +55,6 @@ export const ITEMS_POOL = [
     cost: 85,
     icon: '⚡',
     effect: (player) => {
-      // Reduce el tiempo entre ataques (mínimo 100ms)
       player.attackCooldown = Math.max(100, player.attackCooldown - 100);
     }
   },
@@ -67,7 +65,6 @@ export const ITEMS_POOL = [
     cost: 35,
     icon: '💚',
     effect: (player) => {
-      // Cura 10 de vida (sin pasar el máximo)
       player.health = Math.min(player.maxHealth, player.health + 10);
     }
   },
@@ -96,14 +93,6 @@ export const ITEMS_POOL = [
 ];
 
 // === FUNCIÓN PARA OBTENER ITEMS ALEATORIOS ===
-// Mezcla todos los items y devuelve los primeros 3
 export function getRandomItems(count = 3) {
-  // Hacer una copia del array original
-  const shuffled = [...ITEMS_POOL];
-  
-  // Mezclar aleatoriamente (algoritmo Fisher-Yates simplificado)
-  shuffled.sort(() => Math.random() - 0.5);
-  
-  // Devolver solo los primeros 'count' items (por defecto 3)
-  return shuffled.slice(0, count);
+  return [...ITEMS_POOL].sort(() => Math.random() - 0.5).slice(0, count);
 }

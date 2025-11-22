@@ -15,7 +15,7 @@ export class ShopScene extends Phaser.Scene {
 
   create() {
     // === FONDO ===
-    this.add.rectangle(500, 320, innerWidth, innerHeight, COLORS.background);
+    this.add.rectangle(this.scale.width / 2, this.scale.height / 2, this.scale.width, this.scale.height, COLORS.background);
     
     // === TÍTULO ===
     this.add.text(500, 80, 'TIENDA', {
@@ -25,7 +25,6 @@ export class ShopScene extends Phaser.Scene {
     }).setOrigin(0.5);
 
     // === MOSTRAR MONEDAS DEL JUGADOR ===
-    // Guardamos esta referencia para poder actualizarla después
     this.coinsText = this.add.text(500, 140, `Monedas: ${this.player.coins}`, {
       fontSize: '28px',
       color: '#ffd700',
@@ -36,7 +35,6 @@ export class ShopScene extends Phaser.Scene {
     const randomItems = getRandomItems(3);
 
     // === CREAR 3 TARJETAS DE ITEMS ===
-    // Las posiciones son: 250, 500, 750 (espaciadas 250px)
     randomItems.forEach((item, index) => {
       this.createItemCard(item, 250 + (index * 250), 320);
     });
@@ -96,7 +94,7 @@ export class ShopScene extends Phaser.Scene {
       padding: { x: 20, y: 8 }
     }).setOrigin(0.5).setInteractive();
 
-    // === VERIFICAR SI PUEDE COMPRAR (FIX DEL BUG) ===
+    // === VERIFICAR SI PUEDE COMPRAR ===
     const updateButtonState = () => {
       const canBuy = this.player.coins >= item.cost;
       

@@ -6,7 +6,7 @@ export class ScoresScene extends Phaser.Scene {
     }
 
     create(){
-        this.add.rectangle(500, 300, innerWidth, innerHeight, COLORS.background);
+        this.add.rectangle(this.scale.width / 2, this.scale.height / 2, this.scale.width, this.scale.height, COLORS.background);
         
         this.add.text(500, 100, 'PUNTUACIONES', {  
             fontSize: '56px',

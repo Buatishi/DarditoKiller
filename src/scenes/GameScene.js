@@ -1,5 +1,6 @@
 import { Player } from '../entities/player.js';
 import { EnemyManager } from '../entities/enemy.js';
+import { AbilityManager } from '../abilities/ability.js';
 import { TEXT_COLORS as COLORS } from '../config/colors.js';
 
 
@@ -15,6 +16,11 @@ export class GameScene extends Phaser.Scene {
 
   preload() {
     this.load.image('jugador', 'assets/entities/prota.png');
+
+    // Cargar imágenes de habilidades
+    for (let i = 1; i <= 9; i++) {
+      this.load.image(`ability_${i}`, `assets/abilities/ability_${i}.png`);
+    }
   }
 
 create() {
@@ -22,8 +28,8 @@ create() {
     this.events.off('playerAttack');
     this.events.off('waveChanged');
     
-    // Fondo base
-    this.add.rectangle(500, 320, innerWidth, innerHeight, 0x1a1a2e);
+    // Fondo base - usar el tamaño del canvas, no de la ventana
+    this.add.rectangle(this.scale.width / 2, this.scale.height / 2, this.scale.width, this.scale.height, 0x1a1a2e);
     
     // Grid sutil
     const graphics = this.add.graphics();
@@ -46,6 +52,8 @@ create() {
     this.enemyManager = new EnemyManager(this);
     this.enemyManager.setPlayer(this.player);
     this.enemyManager.startSpawning();
+
+    this.abilityManager = new AbilityManager(this, this.player);
         
     this.physics.add.overlap(
         this.player,
@@ -92,7 +100,7 @@ shutdown() {
     
 createUI() {
     // Vida del jugador - con borde rojo
-    const healthBg = this.add.rectangle(90, 30, 160, 50, COLORS.background, 0.8);
+    const healthBg = this.add.rectangle(90, 30, 160, 50, 0x000000, 0.8);
     const healthBorder = this.add.rectangle(90, 30, 160, 50)
         .setStrokeStyle(2, COLORS.accent, 0.5);
     
@@ -103,7 +111,7 @@ createUI() {
     }).setOrigin(0.5);
 
     // Monedas - con borde amarillo
-    const coinsBg = this.add.rectangle(90, 85, 140, 45, COLORS.background, 0.8);
+    const coinsBg = this.add.rectangle(90, 85, 140, 45, 0x000000, 0.8);
     const coinsBorder = this.add.rectangle(90, 85, 140, 45)
         .setStrokeStyle(2, COLORS.accent, 0.5);
     
@@ -114,7 +122,7 @@ createUI() {
     }).setOrigin(0.5);
 
     // Estado de ataque - con borde cyan
-    const attackBg = this.add.rectangle(90, 135, 140, 40, COLORS.background, 0.8);
+    const attackBg = this.add.rectangle(90, 135, 140, 40, 0x000000, 0.8);
     const attackBorder = this.add.rectangle(90, 135, 140, 40)
         .setStrokeStyle(2, COLORS.accent, 0.4);
     
@@ -123,6 +131,10 @@ createUI() {
         color: COLORS.cyan,
         fontFamily: 'Arial'
     }).setOrigin(0.5);
+
+    // Barra de cooldown para ataque
+    this.attackCooldownBar = this.add.rectangle(90, 135 + 20, 140, 5, 0xff0000, 1);
+    this.attackCooldownBar.setVisible(false);
 
     // Contador de oleadas (centro superior) - con borde cyan
     const waveBg = this.add.rectangle(
@@ -149,7 +161,6 @@ createUI() {
         }
     ).setOrigin(0.5);
 
-    // Progreso de oleada
     this.waveProgressText = this.add.text(
         this.scale.width / 2,
         52,
@@ -171,8 +182,17 @@ createUI() {
 
         if (this.player.canAttack) {
             this.attackText.setText('Z - Atacar');
+            this.attackCooldownBar.setVisible(false);
         } else {
-            this.attackText.setText('Recargando...');
+            this.attackText.setText('Z - Atacar');
+            const remaining = this.player.cooldownEndTime - this.time.now;
+            if (remaining > 0) {
+                const progress = remaining / this.player.attackCooldown;
+                this.attackCooldownBar.setScale(progress, 1);
+                this.attackCooldownBar.setVisible(true);
+            } else {
+                this.attackCooldownBar.setVisible(false);
+            }
         }
 
         // Actualizar información de oleada
@@ -189,6 +209,10 @@ createUI() {
 
     if (this.enemyManager) {
       this.enemyManager.updateAll();
+    }
+
+    if (this.abilityManager) {
+      this.abilityManager.update();
     }
 
     this.updateUI();

@@ -6,11 +6,11 @@ export class MainMenu extends Phaser.Scene {
     }
 
     create() {
-        // Fondo simple
-        this.add.rectangle(500, 300, innerWidth, innerHeight, COLORS.background);
+        // Fondo simple - usar el tamaño del canvas
+        this.add.rectangle(this.scale.width / 2, this.scale.height / 2, this.scale.width, this.scale.height, COLORS.background);
         
         // Título simple en cyan
-        this.add.text(500, 150, 'DARDITO KILLER', {
+        this.add.text(this.scale.width / 2, 150, 'DARDITO KILLER', {
             fontSize: '72px',
             color: TEXT_COLORS.cyan,
             fontStyle: 'bold'
@@ -76,7 +76,7 @@ export class PauseMenu extends Phaser.Scene {
 
     create() {
         // Fondo semi-transparente oscuro
-        this.add.rectangle(500, 300, innerWidth, innerHeight, 0x000000, 0.8);
+        this.add.rectangle(this.scale.width / 2, this.scale.height / 2, this.scale.width, this.scale.height, 0x000000, 0.8);
         
         // Contenedor del menú
         const pauseBg = this.add.rectangle(500, 300, 400, 300, 0x1a1a2e, 0.95);
