@@ -7,15 +7,27 @@
 // - cooldown: tiempo de cooldown en ms
 // - effect: función que afecta al player o escena
 
+class Ability {
+  constructor(id, name, key, icon, wave, cooldown, effect) {
+    this.id = id;
+    this.name = name;
+    this.key = key;
+    this.icon = icon;
+    this.wave = wave;
+    this.cooldown = cooldown;
+    this.effect = effect;
+  }
+};
+
 export const ABILITIES = [
-  {
-    id: 'fireball',
-    name: 'Bola de Fuego',
-    key: '1',
-    icon: 'ability_1',
-    wave: 2,
-    cooldown: 5000,
-    effect: (player, scene) => {
+  new Ability(
+    'fireball',
+    'Bola de Fuego',
+    '1',
+    'ability_1',
+    2,
+    5000,
+    (player, scene) => {
       const fireball = scene.add.circle(player.x, player.y, 50, 0xff4500, 0.8);
       scene.physics.add.existing(fireball);
       fireball.body.setVelocity(0, -300); 
@@ -31,15 +43,15 @@ export const ABILITIES = [
         if (fireball.active) fireball.destroy();
       });
     }
-  },
-  {
-    id: 'heal',
-    name: 'Curación',
-    key: '2',
-    icon: 'ability_2',
-    wave: 3,
-    cooldown: 10000, 
-    effect: (player, scene) => {
+  ),
+  new Ability(
+    'heal',
+    'Curación',
+    '2',
+    'ability_2',
+    3,
+    10000, 
+    (player, scene) => {
       player.health = Math.min(player.maxHealth, player.health + 50);
 
       const healEffect = scene.add.circle(player.x, player.y, 30, 0x00ff00, 0.5);
@@ -51,15 +63,15 @@ export const ABILITIES = [
         onComplete: () => healEffect.destroy()
       });
     }
-  },
-  {
-    id: 'freeze',
-    name: 'Congelación',
-    key: '3',
-    icon: 'ability_3',
-    wave: 4,
-    cooldown: 8000, 
-    effect: (player, scene) => {
+  ),
+  new Ability(
+    'freeze',
+    'Congelación',
+    '3',
+    'ability_3',
+    4,
+    8000, 
+    (player, scene) => {
       
       scene.enemyManager.enemies.children.entries.forEach(enemy => {
         if (enemy.alive) {
@@ -78,15 +90,15 @@ export const ABILITIES = [
         });
       });
     }
-  },
-  {
-    id: 'lightning',
-    name: 'Rayo',
-    key: '4',
-    icon: 'ability_4',
-    wave: 5,
-    cooldown: 7000, 
-    effect: (player, scene) => {
+  ),
+  new Ability(
+    'lightning',
+    'Rayo',
+    '4',
+    'ability_4',
+    5,
+    7000, 
+    (player, scene) => {
       
       let closestEnemy = null;
       let minDistance = Infinity;
@@ -109,15 +121,15 @@ export const ABILITIES = [
         scene.time.delayedCall(200, () => lightning.destroy());
       }
     }
-  },
-  {
-    id: 'shield',
-    name: 'Escudo',
-    key: '5',
-    icon: 'ability_5',
-    wave: 6,
-    cooldown: 15000, 
-    effect: (player, scene) => {
+  ),
+  new Ability(
+    'shield',
+    'Escudo',
+    '5',
+    'ability_5',
+    6,
+    15000, 
+    (player, scene) => {
       player.shielded = true;
       player.shieldEndTime = scene.time.now + 5000;
 
@@ -135,7 +147,7 @@ export const ABILITIES = [
       };
       updateShield();
     }
-  }
+  ),
 ];
 
 export class AbilityManager {
