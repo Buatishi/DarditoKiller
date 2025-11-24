@@ -22,144 +22,144 @@ export class GameScene extends Phaser.Scene {
     }
   }
 
-create() {
+  create() {
+      this.events.off('playerDied');
+      this.events.off('playerAttack');
+      this.events.off('waveChanged');
+      
+      this.add.rectangle(this.scale.width / 2, this.scale.height / 2, this.scale.width, this.scale.height, 0x1a1a2e);
+      
+      const graphics = this.add.graphics();
+      graphics.lineStyle(1, 0x0f3460, 0.3);
+      
+      for (let x = 0; x < this.scale.width; x += 50) {
+          graphics.lineBetween(x, 0, x, this.scale.height);
+      }
+      
+      for (let y = 0; y < this.scale.height; y += 50) {
+          graphics.lineBetween(0, y, this.scale.width, y);
+      }
+
+      this.player = new Player(this, 500, 300);
+      
+      this.player.setCollideWorldBounds(true); 
+
+      this.enemyManager = new EnemyManager(this);
+      this.enemyManager.setPlayer(this.player);
+      this.enemyManager.startSpawning();
+
+      this.abilityManager = new AbilityManager(this, this.player);
+          
+      this.physics.add.overlap(
+          this.player,
+          this.enemyManager.enemies,
+          this.onPlayerHitEnemy,
+          null,
+          this
+      );
+      
+      this.createUI();
+      
+      this.events.on('playerDied', this.onPlayerDied, this);
+  //    this.events.on('enemyKilled', this.onEnemyKilled, this);
+      this.events.on('playerAttack', this.onPlayerAttack, this);
+      this.events.on('waveChanged', this.onWaveChanged, this);
+      
+      this.input.keyboard.on('keydown-ESC', () => {
+          this.scene.pause();
+          this.scene.launch('PauseMenu');
+      });
+  }
+
+  shutdown() {
     this.events.off('playerDied');
     this.events.off('playerAttack');
     this.events.off('waveChanged');
     
-    this.add.rectangle(this.scale.width / 2, this.scale.height / 2, this.scale.width, this.scale.height, 0x1a1a2e);
+    this.input.keyboard.off('keydown-ESC');
     
-    const graphics = this.add.graphics();
-    graphics.lineStyle(1, 0x0f3460, 0.3);
-    
-    for (let x = 0; x < this.scale.width; x += 50) {
-        graphics.lineBetween(x, 0, x, this.scale.height);
+    if (this.enemyManager) {
+      this.enemyManager.destroy();
+      this.enemyManager = null;
     }
     
-    for (let y = 0; y < this.scale.height; y += 50) {
-        graphics.lineBetween(0, y, this.scale.width, y);
+    if (this.player) {
+      this.player.destroy();
+      this.player = null;
     }
-
-    this.player = new Player(this, 500, 300);
-    
-    this.player.setCollideWorldBounds(true); 
-
-    this.enemyManager = new EnemyManager(this);
-    this.enemyManager.setPlayer(this.player);
-    this.enemyManager.startSpawning();
-
-    this.abilityManager = new AbilityManager(this, this.player);
-        
-    this.physics.add.overlap(
-        this.player,
-        this.enemyManager.enemies,
-        this.onPlayerHitEnemy,
-        null,
-        this
-    );
-    
-    this.createUI();
-    
-    this.events.on('playerDied', this.onPlayerDied, this);
-//    this.events.on('enemyKilled', this.onEnemyKilled, this);
-    this.events.on('playerAttack', this.onPlayerAttack, this);
-    this.events.on('waveChanged', this.onWaveChanged, this);
-    
-    this.input.keyboard.on('keydown-ESC', () => {
-        this.scene.pause();
-        this.scene.launch('PauseMenu');
-    });
-}
-
-shutdown() {
-  this.events.off('playerDied');
-  this.events.off('playerAttack');
-  this.events.off('waveChanged');
-  
-  this.input.keyboard.off('keydown-ESC');
-  
-  if (this.enemyManager) {
-    this.enemyManager.destroy();
-    this.enemyManager = null;
   }
-  
-  if (this.player) {
-    this.player.destroy();
-    this.player = null;
+    
+  createUI() {
+      const healthBg = this.add.rectangle(90, 30, 160, 50, 0x000000, 0.8);
+      const healthBorder = this.add.rectangle(90, 30, 160, 50)
+          .setStrokeStyle(2, COLORS.accent, 0.5);
+      
+      this.healthText = this.add.text(90, 30, '', {
+          fontSize: '20px',
+          color: COLORS.red,
+          fontFamily: 'Arial'
+      }).setOrigin(0.5);
+
+      const coinsBg = this.add.rectangle(90, 85, 140, 45, 0x000000, 0.8);
+      const coinsBorder = this.add.rectangle(90, 85, 140, 45)
+          .setStrokeStyle(2, COLORS.accent, 0.5);
+      
+      this.coinsText = this.add.text(90, 85, '', {
+          fontSize: '20px',
+          color: COLORS.yellow,
+          fontFamily: 'Arial'
+      }).setOrigin(0.5);
+
+      const attackBg = this.add.rectangle(90, 135, 140, 40, 0x000000, 0.8);
+      const attackBorder = this.add.rectangle(90, 135, 140, 40)
+          .setStrokeStyle(2, COLORS.accent, 0.4);
+      
+      this.attackText = this.add.text(90, 135, '', {
+          fontSize: '16px',
+          color: COLORS.cyan,
+          fontFamily: 'Arial'
+      }).setOrigin(0.5);
+
+      this.attackCooldownBar = this.add.rectangle(90, 135 + 20, 140, 5, 0xff0000, 1);
+      this.attackCooldownBar.setVisible(false);
+
+      const waveBg = this.add.rectangle(
+          this.scale.width / 2,
+          40,
+          240, 65,
+          0x1a1a2e, 0.8
+      );
+      const waveBorder = this.add.rectangle(
+          this.scale.width / 2,
+          40,
+          240, 65
+      ).setStrokeStyle(2, 0x00d9a3, 0.6);
+      
+      this.waveText = this.add.text(
+          this.scale.width / 2,
+          30,
+          '',
+          {
+              fontSize: '28px',
+              color: COLORS.cyan,
+              fontFamily: 'Arial',
+              fontStyle: 'bold'
+          }
+      ).setOrigin(0.5);
+
+      this.waveProgressText = this.add.text(
+          this.scale.width / 2,
+          52,
+          '',
+          {
+              fontSize: '16px',
+              color: COLORS.text,
+              fontFamily: 'Arial'
+          }
+      ).setOrigin(0.5);
+
+      this.updateUI();
   }
-}
-    
-createUI() {
-    const healthBg = this.add.rectangle(90, 30, 160, 50, 0x000000, 0.8);
-    const healthBorder = this.add.rectangle(90, 30, 160, 50)
-        .setStrokeStyle(2, COLORS.accent, 0.5);
-    
-    this.healthText = this.add.text(90, 30, '', {
-        fontSize: '20px',
-        color: COLORS.red,
-        fontFamily: 'Arial'
-    }).setOrigin(0.5);
-
-    const coinsBg = this.add.rectangle(90, 85, 140, 45, 0x000000, 0.8);
-    const coinsBorder = this.add.rectangle(90, 85, 140, 45)
-        .setStrokeStyle(2, COLORS.accent, 0.5);
-    
-    this.coinsText = this.add.text(90, 85, '', {
-        fontSize: '20px',
-        color: COLORS.yellow,
-        fontFamily: 'Arial'
-    }).setOrigin(0.5);
-
-    const attackBg = this.add.rectangle(90, 135, 140, 40, 0x000000, 0.8);
-    const attackBorder = this.add.rectangle(90, 135, 140, 40)
-        .setStrokeStyle(2, COLORS.accent, 0.4);
-    
-    this.attackText = this.add.text(90, 135, '', {
-        fontSize: '16px',
-        color: COLORS.cyan,
-        fontFamily: 'Arial'
-    }).setOrigin(0.5);
-
-    this.attackCooldownBar = this.add.rectangle(90, 135 + 20, 140, 5, 0xff0000, 1);
-    this.attackCooldownBar.setVisible(false);
-
-    const waveBg = this.add.rectangle(
-        this.scale.width / 2,
-        40,
-        240, 65,
-        0x1a1a2e, 0.8
-    );
-    const waveBorder = this.add.rectangle(
-        this.scale.width / 2,
-        40,
-        240, 65
-    ).setStrokeStyle(2, 0x00d9a3, 0.6);
-    
-    this.waveText = this.add.text(
-        this.scale.width / 2,
-        30,
-        '',
-        {
-            fontSize: '28px',
-            color: COLORS.cyan,
-            fontFamily: 'Arial',
-            fontStyle: 'bold'
-        }
-    ).setOrigin(0.5);
-
-    this.waveProgressText = this.add.text(
-        this.scale.width / 2,
-        52,
-        '',
-        {
-            fontSize: '16px',
-            color: COLORS.text,
-            fontFamily: 'Arial'
-        }
-    ).setOrigin(0.5);
-
-    this.updateUI();
-}
 
   updateUI() {
     if (this.player && this.player.alive) {
