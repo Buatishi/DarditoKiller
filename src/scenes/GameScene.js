@@ -238,55 +238,55 @@ export class GameScene extends Phaser.Scene {
     console.log(`Nueva oleada: ${waveNumber}`);
   }
 
-onPlayerDied() {
-    this.physics.pause();
-    
-    if (this.enemyManager) {
-        this.enemyManager.stopSpawning();
-    }
+  onPlayerDied() {
+      this.physics.pause();
+      
+      if (this.enemyManager) {
+          this.enemyManager.stopSpawning();
+      }
 
-    const gameOverBg = this.add.rectangle(
-        this.scale.width / 2,
-        this.scale.height / 2,
-        500, 200,
-        0x1a1a2e, 0.95
-    );
-    
-    const gameOverBorder = this.add.rectangle(
-        this.scale.width / 2,
-        this.scale.height / 2,
-        500, 200
-    ).setStrokeStyle(3, 0xe94560, 0.8);
+      const gameOverBg = this.add.rectangle(
+          this.scale.width / 2,
+          this.scale.height / 2,
+          500, 200,
+          0x1a1a2e, 0.95
+      );
+      
+      const gameOverBorder = this.add.rectangle(
+          this.scale.width / 2,
+          this.scale.height / 2,
+          500, 200
+      ).setStrokeStyle(3, 0xe94560, 0.8);
 
-    this.add.text(
-        this.scale.width / 2,
-        this.scale.height / 2 - 30,
-        'GAME OVER',
-        {
-            fontSize: '56px',
-            color: '#e94560',
-            fontFamily: 'Arial',
-            fontStyle: 'bold'
-        }
-    ).setOrigin(0.5);
+      this.add.text(
+          this.scale.width / 2,
+          this.scale.height / 2 - 30,
+          'GAME OVER',
+          {
+              fontSize: '56px',
+              color: '#e94560',
+              fontFamily: 'Arial',
+              fontStyle: 'bold'
+          }
+      ).setOrigin(0.5);
 
-    this.add.text(
-        this.scale.width / 2,
-        this.scale.height / 2 + 40,
-        `Oleada alcanzada: ${this.enemyManager.currentWave}`,
-        {
-            fontSize: '28px',
-            color: '#f1f1f1',
-            fontFamily: 'Arial'
-        }
-    ).setOrigin(0.5);
+      this.add.text(
+          this.scale.width / 2,
+          this.scale.height / 2 + 40,
+          `Oleada alcanzada: ${this.enemyManager.currentWave}`,
+          {
+              fontSize: '28px',
+              color: '#f1f1f1',
+              fontFamily: 'Arial'
+          }
+      ).setOrigin(0.5);
 
-    this.time.delayedCall(3000, () => {
-        if (this.enemyManager) {
-            this.enemyManager.destroy();
-        }
-        this.scene.restart();
-    });
-}
+      this.time.delayedCall(3000, () => {
+          if (this.enemyManager) {
+              this.enemyManager.destroy();
+          }
+          this.scene.restart();
+      });
+  }
 
 }
