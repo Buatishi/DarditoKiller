@@ -17,7 +17,6 @@ export class GameScene extends Phaser.Scene {
   preload() {
     this.load.image('jugador', 'assets/entities/prota.png');
 
-    // Cargar imágenes de habilidades
     for (let i = 1; i <= 9; i++) {
       this.load.image(`ability_${i}`, `assets/abilities/ability_${i}.png`);
     }
@@ -28,26 +27,22 @@ create() {
     this.events.off('playerAttack');
     this.events.off('waveChanged');
     
-    // Fondo base - usar el tamaño del canvas, no de la ventana
     this.add.rectangle(this.scale.width / 2, this.scale.height / 2, this.scale.width, this.scale.height, 0x1a1a2e);
     
-    // Grid sutil
     const graphics = this.add.graphics();
     graphics.lineStyle(1, 0x0f3460, 0.3);
     
-    // Líneas verticales
     for (let x = 0; x < this.scale.width; x += 50) {
         graphics.lineBetween(x, 0, x, this.scale.height);
     }
     
-    // Líneas horizontales
     for (let y = 0; y < this.scale.height; y += 50) {
         graphics.lineBetween(0, y, this.scale.width, y);
     }
 
     this.player = new Player(this, 500, 300);
     
-    this.player.setCollideWorldBounds(true);  // No puede salir de la pantalla
+    this.player.setCollideWorldBounds(true); 
 
     this.enemyManager = new EnemyManager(this);
     this.enemyManager.setPlayer(this.player);
@@ -77,21 +72,17 @@ create() {
 }
 
 shutdown() {
-  // Limpiar event listeners de la escena
   this.events.off('playerDied');
   this.events.off('playerAttack');
   this.events.off('waveChanged');
   
-  // Limpiar listener del teclado ESC
   this.input.keyboard.off('keydown-ESC');
   
-  // Limpiar manager
   if (this.enemyManager) {
     this.enemyManager.destroy();
     this.enemyManager = null;
   }
   
-  // Limpiar player
   if (this.player) {
     this.player.destroy();
     this.player = null;
@@ -99,7 +90,6 @@ shutdown() {
 }
     
 createUI() {
-    // Vida del jugador - con borde rojo
     const healthBg = this.add.rectangle(90, 30, 160, 50, 0x000000, 0.8);
     const healthBorder = this.add.rectangle(90, 30, 160, 50)
         .setStrokeStyle(2, COLORS.accent, 0.5);
@@ -110,7 +100,6 @@ createUI() {
         fontFamily: 'Arial'
     }).setOrigin(0.5);
 
-    // Monedas - con borde amarillo
     const coinsBg = this.add.rectangle(90, 85, 140, 45, 0x000000, 0.8);
     const coinsBorder = this.add.rectangle(90, 85, 140, 45)
         .setStrokeStyle(2, COLORS.accent, 0.5);
@@ -121,7 +110,6 @@ createUI() {
         fontFamily: 'Arial'
     }).setOrigin(0.5);
 
-    // Estado de ataque - con borde cyan
     const attackBg = this.add.rectangle(90, 135, 140, 40, 0x000000, 0.8);
     const attackBorder = this.add.rectangle(90, 135, 140, 40)
         .setStrokeStyle(2, COLORS.accent, 0.4);
@@ -132,11 +120,9 @@ createUI() {
         fontFamily: 'Arial'
     }).setOrigin(0.5);
 
-    // Barra de cooldown para ataque
     this.attackCooldownBar = this.add.rectangle(90, 135 + 20, 140, 5, 0xff0000, 1);
     this.attackCooldownBar.setVisible(false);
 
-    // Contador de oleadas (centro superior) - con borde cyan
     const waveBg = this.add.rectangle(
         this.scale.width / 2,
         40,
@@ -195,7 +181,6 @@ createUI() {
             }
         }
 
-        // Actualizar información de oleada
         const waveInfo = this.enemyManager.getWaveInfo();
         this.waveText.setText(`OLEADA ${waveInfo.currentWave}`);
         this.waveProgressText.setText(`Enemigos: ${waveInfo.progress}`);
@@ -250,7 +235,6 @@ createUI() {
   }
 
   onWaveChanged(waveNumber) {
-    // Se puede usar para efectos adicionales al cambiar de oleada
     console.log(`Nueva oleada: ${waveNumber}`);
   }
 
@@ -261,7 +245,6 @@ onPlayerDied() {
         this.enemyManager.stopSpawning();
     }
 
-    // Fondo del Game Over
     const gameOverBg = this.add.rectangle(
         this.scale.width / 2,
         this.scale.height / 2,
@@ -275,7 +258,6 @@ onPlayerDied() {
         500, 200
     ).setStrokeStyle(3, 0xe94560, 0.8);
 
-    // Texto GAME OVER
     this.add.text(
         this.scale.width / 2,
         this.scale.height / 2 - 30,
@@ -288,7 +270,6 @@ onPlayerDied() {
         }
     ).setOrigin(0.5);
 
-    // Mostrar oleada alcanzada
     this.add.text(
         this.scale.width / 2,
         this.scale.height / 2 + 40,

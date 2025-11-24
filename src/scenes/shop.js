@@ -8,7 +8,6 @@ export class ShopScene extends Phaser.Scene {
   }
 
   init(data) {
-    // Recibimos el jugador y la oleada actual desde GameScene
     this.player = data.player;
     this.currentWave = data.wave;
   }
@@ -24,7 +23,6 @@ export class ShopScene extends Phaser.Scene {
       fontStyle: 'bold'
     }).setOrigin(0.5);
 
-    // === MOSTRAR MONEDAS DEL JUGADOR ===
     this.coinsText = this.add.text(500, 140, `Monedas: ${this.player.coins}`, {
       fontSize: '28px',
       color: '#ffd700',
@@ -34,7 +32,6 @@ export class ShopScene extends Phaser.Scene {
     // === OBTENER 3 ITEMS ALEATORIOS ===
     const randomItems = getRandomItems(3);
 
-    // === CREAR 3 TARJETAS DE ITEMS ===
     randomItems.forEach((item, index) => {
       this.createItemCard(item, 250 + (index * 250), 320);
     });
@@ -54,17 +51,14 @@ export class ShopScene extends Phaser.Scene {
 
   // === CREAR UNA TARJETA DE ITEM ===
   createItemCard(item, x, y) {
-    // Fondo de la tarjeta
     const cardBg = this.add.rectangle(x, y, 200, 300, TEXT_COLORS.backgroundLight, 0.9);
     const cardBorder = this.add.rectangle(x, y, 200, 300)
       .setStrokeStyle(2, 0x00d9a3, 0.5);
 
-    // Icono grande del item (emoji)
     this.add.text(x, y - 90, item.icon, {
       fontSize: '64px'
     }).setOrigin(0.5);
 
-    // Nombre del item
     this.add.text(x, y - 20, item.name, {
       fontSize: '20px',
       color: '#f1f1f1',
@@ -72,21 +66,18 @@ export class ShopScene extends Phaser.Scene {
       align: 'center'
     }).setOrigin(0.5);
 
-    // Descripción del item
     this.add.text(x, y + 15, item.description, {
       fontSize: '16px',
       color: '#a8a8a8',
       align: 'center'
     }).setOrigin(0.5);
 
-    // Precio
     this.add.text(x, y + 60, `🪙 ${item.cost}`, {
       fontSize: '22px',
       color: '#ffd700',
       fontStyle: 'bold'
     }).setOrigin(0.5);
 
-    // === BOTÓN DE COMPRA ===
     const buyBtn = this.add.text(x, y + 110, 'COMPRAR', {
       fontSize: '20px',
       color: '#00d9a3',
@@ -99,17 +90,14 @@ export class ShopScene extends Phaser.Scene {
       const canBuy = this.player.coins >= item.cost;
       
       if (canBuy) {
-        // Puede comprar: botón activo
         buyBtn.setStyle({ color: '#00d9a3', backgroundColor: '#00d9a320' });
         buyBtn.setInteractive();
       } else {
-        // No puede comprar: botón desactivado
         buyBtn.setStyle({ color: '#666666', backgroundColor: '#33333320' });
         buyBtn.disableInteractive();
       }
     };
 
-    // Verificar estado inicial
     updateButtonState();
 
     // === EVENTOS DEL BOTÓN ===
@@ -126,7 +114,6 @@ export class ShopScene extends Phaser.Scene {
     });
 
     buyBtn.on('pointerdown', () => {
-      // Doble verificación antes de comprar
       if (this.player.coins >= item.cost) {
         // === REALIZAR LA COMPRA ===
         

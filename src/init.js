@@ -5,12 +5,12 @@ import { ShopScene } from './scenes/shop.js';
 
 const config = {
     type: Phaser.AUTO,
-    width: 1000, //1000
-    height: 640, //640
-    parent: 'conteiner', // Asegurar que se renderiza en el contenedor correcto
+    width: 1000,
+    height: 640,
+    parent: 'conteiner',
     scale: {
-        mode: Phaser.Scale.FIT, // Escalar para que quepa en la ventana manteniendo proporción
-        autoCenter: Phaser.Scale.CENTER_BOTH // Centrar el canvas
+        mode: Phaser.Scale.FIT, //mantiene relacion
+        autoCenter: Phaser.Scale.CENTER_BOTH 
     },
     physics: {
         default: 'arcade',

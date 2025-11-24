@@ -6,17 +6,14 @@ export class MainMenu extends Phaser.Scene {
     }
 
     create() {
-        // Fondo simple - usar el tamaño del canvas
         this.add.rectangle(this.scale.width / 2, this.scale.height / 2, this.scale.width, this.scale.height, COLORS.background);
         
-        // Título simple en cyan
         this.add.text(this.scale.width / 2, 150, 'DARDITO KILLER', {
             fontSize: '72px',
             color: TEXT_COLORS.cyan,
             fontStyle: 'bold'
         }).setOrigin(0.5);
         
-        // Botón JUGAR
         const playButton = this.add.text(500, 300, 'JUGAR', {
             fontSize: '48px',
             color: TEXT_COLORS.cyan,
@@ -38,7 +35,6 @@ export class MainMenu extends Phaser.Scene {
             this.scene.start('GameScene');
         });
 
-        // Botón PUNTUACIONES
         const scoresButton = this.add.text(500, 400, 'PUNTUACIONES', {
             fontSize: '36px',
             color: TEXT_COLORS.textMuted,
@@ -60,7 +56,6 @@ export class MainMenu extends Phaser.Scene {
             this.scene.start('ScoresScene');
         });
         
-        // Instrucciones
         this.add.text(500, 550, 'Flechas para mover • Z para atacar • ESC para pausar', {
             fontSize: '20px',
             color: TEXT_COLORS.textMuted,
@@ -75,22 +70,18 @@ export class PauseMenu extends Phaser.Scene {
     }
 
     create() {
-        // Fondo semi-transparente oscuro
         this.add.rectangle(this.scale.width / 2, this.scale.height / 2, this.scale.width, this.scale.height, 0x000000, 0.8);
         
-        // Contenedor del menú
         const pauseBg = this.add.rectangle(500, 300, 400, 300, 0x1a1a2e, 0.95);
         const pauseBorder = this.add.rectangle(500, 300, 400, 300)
             .setStrokeStyle(3, COLORS.background, 0.6);
         
-        // Título PAUSA
         this.add.text(500, 200, 'PAUSA', {
             fontSize: '56px',
             color: '#00d9a3',
             fontStyle: 'bold'
         }).setOrigin(0.5);
         
-        // Botón CONTINUAR
         const resumeButton = this.add.text(500, 300, 'CONTINUAR', {
             fontSize: '32px',
             color: '#00d9a3',
@@ -111,7 +102,6 @@ export class PauseMenu extends Phaser.Scene {
             this.scene.stop();
         });
         
-        // Botón MENÚ PRINCIPAL
         const menuButton = this.add.text(500, 370, 'MENÚ PRINCIPAL', {
             fontSize: '28px',
             color: '#e94560',
@@ -133,7 +123,6 @@ export class PauseMenu extends Phaser.Scene {
             this.scene.start('MainMenu');
         });
         
-        // Presionar ESC para volver
         this.input.keyboard.on('keydown-ESC', () => {
             this.scene.resume('GameScene');
             this.scene.stop();

@@ -14,7 +14,6 @@ export class ScoresScene extends Phaser.Scene {
             fontStyle: 'bold'
         }).setOrigin(0.5);
         
-        // Aquí irán tus puntuaciones más adelante
         this.add.text(500, 300, 'Próximamente: Últimas 3 partidas', {
             fontSize: '24px',
             color: TEXT_COLORS.textMuted

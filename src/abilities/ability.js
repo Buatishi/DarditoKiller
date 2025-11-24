@@ -146,8 +146,6 @@ export class AbilityManager {
     this.abilityCooldowns = new Map();
     this.currentWave = 1;
 
-    this.preloadAbilityImages();
-
     scene.events.on('waveChanged', this.onWaveChanged, this);
 
     this.keys = {};
@@ -168,12 +166,6 @@ export class AbilityManager {
     }
 
     this.createAbilityUI();
-  }
-
-  preloadAbilityImages() {
-    for (let i = 1; i <= 9; i++) {
-      this.scene.load.image(`ability_${i}`, `assets/abilities/ability_${i}.png`);
-    }
   }
 
   onWaveChanged(waveNumber) {
