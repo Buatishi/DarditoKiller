@@ -1,10 +1,10 @@
 // Cada item tiene:
-// - id: identificador único
+// - id: identificador unico
 // - name: nombre que se muestra
-// - description: qué hace el item
-// - cost: cuántas monedas cuesta
+// - description: que hace el item
+// - cost: cuantas monedas cuesta
 // - icon: emoji para mostrar
-// - effect: función que modifica al jugador
+// - effect: funcion que modifica al jugador
 
 class Item {
   constructor(id, name, description, cost, icon, effect) {
@@ -21,7 +21,7 @@ export const ITEMS_POOL = [
   new Item(
     'health_boost',
     'Corazon Extra',
-    '+20 Vida Máxima',
+    '+20 Vida Maxima',
     70,
     '❤️',
     (player) => {
@@ -102,7 +102,7 @@ export const ITEMS_POOL = [
   )
 ];
 
-// === FUNCIÓN PARA OBTENER ITEMS ALEATORIOS ===
+// === FUNCION PARA OBTENER ITEMS ALEATORIOS ===
 export function getRandomItems(count = 3) {
   return [...ITEMS_POOL].sort(() => Math.random() - 0.5).slice(0, count);
 }

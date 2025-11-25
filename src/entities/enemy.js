@@ -11,9 +11,9 @@ export class Enemy extends Entity {
 constructor(scene, x, y, health, speed, damage) {
   super(scene, x, y, null, health);
 
-  // Crear círculo visual
-  this.circle = scene.add.circle(0, 0, 30, COLORS.accent); // Radio 30, color rojo/rosa
-  this.circle.setStrokeStyle(2, 0xff6b6b, 0.8); // Borde más claro
+  // Crear circulo visual
+  this.circle = scene.add.circle(0, 0, 30, COLORS.accent);
+  this.circle.setStrokeStyle(2, 0xff6b6b, 0.8); 
   
   this.speed = speed;
   this.damage = damage;
@@ -21,13 +21,12 @@ constructor(scene, x, y, health, speed, damage) {
   this.target = null;
   this.frozen = false;
   
-  // IMPORTANTE: Configurar hitbox circular correcta
   // Primero desactivar el body rectangular por defecto
-  this.body.setSize(60, 60); // Tamaño del área de colisión (diámetro = radio * 2)
-  this.setCircle(30); // Radio 30 = diámetro 60
+  this.body.setSize(60, 60); //(diametro = radio * 2)
+  this.setCircle(30); // Radio 30 = diametro 60
   
-  // Centrar el offset del body para que coincida con el círculo visual
-  this.body.setOffset(-15, -15); // Ajustar el offset para centrar la colisión
+  // Centrar el offset del body para que coincida con el circulo visual
+  this.body.setOffset(-15, -15); // Ajustar el offset para centrar la colision
 }
 
   setTarget(player) {
@@ -37,10 +36,10 @@ constructor(scene, x, y, health, speed, damage) {
   update() {
     if (!this.alive || !this.target || !this.target.alive) return;
 
-    // Si está congelado, no se mueve
+    // Si esta congelado, no se mueve
     if (this.frozen) return;
 
-    // Actualizar posición del círculo para que siga al sprite
+    // Actualizar posicion del circulo para que siga al sprite
     if (this.circle) {
       this.circle.setPosition(this.x, this.y);
     }
@@ -64,7 +63,7 @@ constructor(scene, x, y, health, speed, damage) {
 
     this.health -= damage;
 
-    // Efecto visual en el círculo
+    // Efecto visual en el circulo
     if (this.circle) {
       this.circle.setFillStyle(0xffffff); // Flash blanco
       this.scene.time.delayedCall(100, () => {
@@ -83,7 +82,7 @@ constructor(scene, x, y, health, speed, damage) {
   die() {
     this.alive = false;
     
-    // Destruir círculo visual
+    // Destruir circulo visual
     if (this.circle) {
       this.circle.destroy();
     }
@@ -97,7 +96,7 @@ constructor(scene, x, y, health, speed, damage) {
   }
 
   destroy() {
-    // Asegurarse de limpiar el círculo
+    // Asegurarse de limpiar el circulo
     if (this.circle) {
       this.circle.destroy();
       this.circle = null;
@@ -156,9 +155,9 @@ export class EnemyManager {
     }
   }
 
-  // Spawn de un enemigo con estadísticas según la oleada actual
+  // Spawn de un enemigo con estadisticas segun la oleada actual
   spawnEnemy() {
-    // Verificaciones más robustas
+    // Verificaciones mas robustas
     if (!this.player || !this.waveInProgress || !this.enemies || !this.scene || !this.scene.physics) {
       return;
     }
@@ -186,7 +185,7 @@ export class EnemyManager {
         break;
     }
 
-    // Calcular estadísticas incrementadas según la oleada
+    // Calcular estadisticas incrementadas segun la oleada
     const waveMultiplier = 1 + (this.currentWave - 1) * 0.15; // 15% de incremento por oleada
     const health = Math.floor(this.baseEnemyHealth * waveMultiplier);
     const speed = Math.floor(this.baseEnemySpeed * waveMultiplier);
@@ -213,7 +212,7 @@ export class EnemyManager {
       this.player.addCoins(coinReward);
     }
 
-    // Verificar si se completó la oleada
+    // Verificar si se completo la oleada
     if (this.enemiesKilledThisWave >= this.enemiesPerWave) {
       this.completeWave();
     }
@@ -263,7 +262,7 @@ completeWave() {
     }
   ).setOrigin(0.5);
 
-  // === ANIMACIÓN DEL MENSAJE ===
+  // === ANIMACION DEL MENSAJE ===
   messageBg.setScale(0.5).setAlpha(0);
   messageBorder.setScale(0.5).setAlpha(0);
   message.setScale(0.5).setAlpha(0);
@@ -276,7 +275,7 @@ completeWave() {
     ease: 'Back.out'
   });
 
-  // === DESPUÉS DE 1.5 SEGUNDOS, ABRIR TIENDA ===
+  // === DESPUES DE 1.5 SEGUNDOS, ABRIR TIENDA ===
   this.scene.time.delayedCall(1500, () => {
     messageBg.destroy();
     messageBorder.destroy();
@@ -290,7 +289,7 @@ completeWave() {
         wave: this.currentWave
       });
     }
-    // Si el jugador murió, no hacemos nada (el game over ya se mostró)
+    // Si el jugador murio, no hacemos nada (el game over ya se mostro)
   });
 }
 
@@ -316,7 +315,7 @@ completeWave() {
     });
   }
 
-  // Obtener información de la oleada actual
+  // Obtener informacion de la oleada actual
   getWaveInfo() {
     return {
       currentWave: this.currentWave,
@@ -340,7 +339,7 @@ completeWave() {
       const enemiesArray = [...this.enemies.children.entries];
       enemiesArray.forEach(enemy => {
         if (enemy && enemy.active && enemy.scene) {
-          // Destruir círculo si existe
+          // Destruir circulo si existe
           if (enemy.circle) {
             enemy.circle.destroy();
           }

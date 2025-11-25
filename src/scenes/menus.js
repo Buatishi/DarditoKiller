@@ -102,7 +102,7 @@ export class PauseMenu extends Phaser.Scene {
             this.scene.stop();
         });
         
-        const menuButton = this.add.text(500, 370, 'MENÚ PRINCIPAL', {
+        const menuButton = this.add.text(500, 370, 'MENu PRINCIPAL', {
             fontSize: '28px',
             color: '#e94560',
             backgroundColor: '#e9456020',

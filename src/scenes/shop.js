@@ -16,7 +16,7 @@ export class ShopScene extends Phaser.Scene {
     // === FONDO ===
     this.add.rectangle(this.scale.width / 2, this.scale.height / 2, this.scale.width, this.scale.height, COLORS.background);
     
-    // === TÍTULO ===
+    // === TiTULO ===
     this.add.text(500, 80, 'TIENDA', {
       fontSize: '56px',
       color: '#00d9a3',
@@ -36,7 +36,7 @@ export class ShopScene extends Phaser.Scene {
       this.createItemCard(item, 250 + (index * 250), 320);
     });
 
-    // === BOTÓN PARA CONTINUAR ===
+    // === BOTON PARA CONTINUAR ===
     const continueBtn = this.add.text(500, 520, 'CONTINUAR', {
       fontSize: '28px',
       color: '#00d9a3',
@@ -100,7 +100,7 @@ export class ShopScene extends Phaser.Scene {
 
     updateButtonState();
 
-    // === EVENTOS DEL BOTÓN ===
+    // === EVENTOS DEL BOTON ===
     buyBtn.on('pointerover', () => {
       if (this.player.coins >= item.cost) {
         buyBtn.setScale(1.1);
@@ -126,7 +126,7 @@ export class ShopScene extends Phaser.Scene {
         // 3. Actualizar el texto de monedas
         this.coinsText.setText(`Monedas: ${this.player.coins}`);
         
-        // 4. Cambiar el botón a "COMPRADO"
+        // 4. Cambiar el boton a "COMPRADO"
         buyBtn.setText('✓ COMPRADO');
         buyBtn.setStyle({ color: '#00ff00', backgroundColor: '#00ff0020' });
         buyBtn.disableInteractive();
@@ -135,7 +135,7 @@ export class ShopScene extends Phaser.Scene {
         cardBorder.setStrokeStyle(3, 0x00ff00, 0.8);
         cardBg.setFillStyle(0x003300, 0.9);
         
-        // 6. Animación de compra exitosa
+        // 6. Animacion de compra exitosa
         this.tweens.add({
           targets: [cardBg, cardBorder],
           alpha: 0.5,

@@ -14,12 +14,12 @@ export class ScoresScene extends Phaser.Scene {
             fontStyle: 'bold'
         }).setOrigin(0.5);
         
-        this.add.text(500, 300, 'Próximamente: Últimas 3 partidas', {
+        this.add.text(500, 300, 'Proximamente: ultimas 3 partidas', {
             fontSize: '24px',
             color: TEXT_COLORS.textMuted
         }).setOrigin(0.5);
     
-        const menuButton = this.add.text(500, 500, 'MENÚ PRINCIPAL', {
+        const menuButton = this.add.text(500, 500, 'MENu PRINCIPAL', {
             fontSize: '32px',
             color: TEXT_COLORS.textMuted,
             backgroundColor: '#16213e80',

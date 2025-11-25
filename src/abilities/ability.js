@@ -1,11 +1,11 @@
 // Cada item tiene:
-// - id: identificador único
+// - id: identificador unico
 // - name: nombre de habilidad
 // - key: tecla a presionar (1-9)
 // - icon: ruta de imagen en assets/abilities/
 // - wave: en que wave aparece
 // - cooldown: tiempo de cooldown en ms
-// - effect: función que afecta al player o escena
+// - effect: funcion que afecta al player o escena
 
 class Ability {
   constructor(id, name, key, icon, wave, cooldown, effect) {
@@ -46,7 +46,7 @@ export const ABILITIES = [
   ),
   new Ability(
     'heal',
-    'Curación',
+    'Curacion',
     '2',
     'ability_2',
     3,
@@ -66,7 +66,7 @@ export const ABILITIES = [
   ),
   new Ability(
     'freeze',
-    'Congelación',
+    'Congelacion',
     '3',
     'ability_3',
     4,

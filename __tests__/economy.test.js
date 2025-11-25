@@ -4,7 +4,7 @@ import { Enemy, EnemyManager } from '../src/entities/enemy.js';
 import { ShopScene } from '../src/scenes/shop.js';
 import { ITEMS_POOL } from '../src/config/items.js';
 
-describe('Simulación de Wave Completa con Economía y Powerups', () => {
+describe('Simulacion de Wave Completa con Economia y Powerups', () => {
     let scene;
     let player;
     let enemyManager;
@@ -34,7 +34,7 @@ describe('Simulación de Wave Completa con Economía y Powerups', () => {
     });
 
     test('Wave completa: eliminar enemigos, ganar monedas, comprar powerup y verificar efecto', () => {
-        // === FASE 1: CONFIGURACIÓN DE LA WAVE ===
+        // === FASE 1: CONFIGURACIoN DE LA WAVE ===
         expect(player.coins).toBe(0);
         expect(player.health).toBe(100);
         expect(player.damage).toBe(20);
@@ -43,7 +43,7 @@ describe('Simulación de Wave Completa con Economía y Powerups', () => {
         expect(enemyManager.enemiesKilledThisWave).toBe(0);
         expect(enemyManager.waveInProgress).toBe(true);
 
-        // === FASE 2: SIMULAR SPAWN Y ELIMINACIÓN DE ENEMIGOS ===
+        // === FASE 2: SIMULAR SPAWN Y ELIMINACIoN DE ENEMIGOS ===
         const enemiesSpawned = [];
         for (let i = 0; i < 5; i++) {
             const enemy = new Enemy(scene, 100 + i * 50, 100, 30, 80, 10);
@@ -69,7 +69,7 @@ describe('Simulación de Wave Completa con Economía y Powerups', () => {
             expect(enemyManager.enemiesKilledThisWave).toBe(index + 1);
         });
 
-        // === FASE 3: VERIFICAR COMPLETACIÓN DE LA WAVE ===
+        // === FASE 3: VERIFICAR COMPLETACIoN DE LA WAVE ===
         expect(player.coins).toBe(50); // 5 enemigos * 10 monedas
         expect(enemyManager.waveInProgress).toBe(false);
         expect(enemyManager.enemiesKilledThisWave).toBe(5);
@@ -82,12 +82,12 @@ describe('Simulación de Wave Completa con Economía y Powerups', () => {
         expect(shopScene.player).toBe(player);
         expect(shopScene.currentWave).toBe(1);
 
-        // === FASE 5: COMPRAR UN POWERUP ESPECÍFICO (DAMAGE BOOST) ===
+        // === FASE 5: COMPRAR UN POWERUP ESPECiFICO (DAMAGE BOOST) ===
         const damageBoostItem = ITEMS_POOL.find(item => item.id === 'damage_boost');
         expect(damageBoostItem).toBeDefined();
         expect(damageBoostItem.cost).toBe(90);
 
-        // El jugador no tiene suficientes monedas aún (50 < 90)
+        // El jugador no tiene suficientes monedas aun (50 < 90)
         expect(player.coins).toBe(50);
         expect(player.coins < damageBoostItem.cost).toBe(true);
 
@@ -120,7 +120,7 @@ describe('Simulación de Wave Completa con Economía y Powerups', () => {
         const enemyHealthBefore = newEnemy.health;
         newEnemy.takeDamage(player.damage);
         
-        // Verificar que el daño aumentado se aplicó correctamente
+        // Verificar que el daño aumentado se aplico correctamente
         expect(newEnemy.health).toBe(enemyHealthBefore - 30);
         expect(newEnemy.health).toBe(0); // 30 inicial - 30 daño = 0
         expect(newEnemy.alive).toBe(false);
@@ -134,7 +134,7 @@ describe('Simulación de Wave Completa con Economía y Powerups', () => {
         expect(enemyManager.enemiesPerWave).toBe(7); // 5 + 2
     });
 
-    test('Comprar múltiples powerups y verificar efectos acumulados', () => {
+    test('Comprar multiples powerups y verificar efectos acumulados', () => {
         // Dar monedas suficientes al jugador
         player.addCoins(500);
         expect(player.coins).toBe(500);
@@ -150,18 +150,18 @@ describe('Simulación de Wave Completa con Economía y Powerups', () => {
         damageItem.effect(player);
         expect(player.damage).toBe(initialDamage + 10);
 
-        // Comprar Botas Rápidas (+30 velocidad, cuesta 70)
+        // Comprar Botas Rpidas (+30 velocidad, cuesta 70)
         const speedItem = ITEMS_POOL.find(item => item.id === 'speed_boost');
         player.spendCoins(speedItem.cost);
         speedItem.effect(player);
         expect(player.speed).toBe(initialSpeed + 30);
 
-        // Comprar Corazón Extra (+20 vida máxima, cuesta 70)
+        // Comprar Corazon Extra (+20 vida mxima, cuesta 70)
         const healthItem = ITEMS_POOL.find(item => item.id === 'health_boost');
         player.spendCoins(healthItem.cost);
         healthItem.effect(player);
         expect(player.maxHealth).toBe(initialMaxHealth + 20);
-        expect(player.health).toBe(initialMaxHealth + 20); // También aumenta la vida actual
+        expect(player.health).toBe(initialMaxHealth + 20); // Tambien aumenta la vida actual
 
         // Verificar monedas gastadas
         expect(player.coins).toBe(500 - 90 - 70 - 70); // 270
@@ -186,9 +186,9 @@ describe('Simulación de Wave Completa con Economía y Powerups', () => {
         expect(purchaseSuccess).toBe(false);
         expect(player.coins).toBe(50); // Las monedas no cambiaron
 
-        // El efecto no debería aplicarse
+        // El efecto no deberia aplicarse
         const damageBeforeAttempt = player.damage;
-        // No aplicar el efecto si la compra falló
+        // No aplicar el efecto si la compra fallo
         if (purchaseSuccess) {
             expensiveItem.effect(player);
         }
